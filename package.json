@@ -1,0 +1,88 @@
+{
+  "name": "dotenv-webpack",
+  "description": "A simple webpack plugin to support dotenv.",
+  "version": "0.0.0-semantically-released",
+  "main": "index.js",
+  "scripts": {
+    "precommit": "npm run standard && npm run build && npm run cover",
+    "commit": "git-cz",
+    "standard": "standard",
+    "predoc": "rimraf docs",
+    "doc": "jsdoc -c doc.json",
+    "cover": "nyc npm t && npm run coverage-report",
+    "coverage-check": "nyc check-coverage --branches 100 --statements 100 --functions 100 --lines 100",
+    "coverage-report": "nyc report --reporter=lcov",
+    "test": "_mocha --compilers js:babel-register",
+    "prebuild": "rimraf dist",
+    "build": "babel --copy-files --out-dir dist src",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "travis": "npm run precommit",
+    "travis2": "npm run precommit && npm run coveralls && npm run coverage-check",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrsteele/dotenv-webpack.git"
+  },
+  "keywords": [
+    "dotenv",
+    "webpack",
+    "plugin"
+  ],
+  "author": "Matt Steele <matt@omnionline.us> (http://omnionline.us/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrsteele/dotenv-webpack/issues"
+  },
+  "homepage": "https://github.com/mrsteele/dotenv-webpack#readme",
+  "dependencies": {
+    "dotenv-safe": "^2.3.1",
+    "webpack": "^1.13.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-eslint": "^6.1.0",
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-register": "^6.9.0",
+    "chai": "^3.5.0",
+    "chai-subset": "^1.2.2",
+    "commitizen": "^2.8.2",
+    "coveralls": "^2.11.9",
+    "cz-conventional-changelog": "^1.1.6",
+    "jsdoc": "^3.4.0",
+    "mocha": "^2.5.3",
+    "mocha-lcov-reporter": "^1.2.0",
+    "nyc": "^6.6.1",
+    "rimraf": "^2.5.2",
+    "semantic-release": "^4.3.5",
+    "standard": "^7.1.2"
+  },
+  "files": [
+    "dist",
+    "browser.js",
+    "README.md"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "browser": "./browser.js",
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-object-assign"
+    ]
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ]
+  }
+}
