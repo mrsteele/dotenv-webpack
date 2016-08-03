@@ -1,4 +1,4 @@
-import dotenv from 'dotenv-safe'
+import { parse } from 'dotenv'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
@@ -7,16 +7,14 @@ class Dotenv {
     options = options || {}
     if (!options.path) options.path = './.env'
 
-    dotenv.config(options)
     this.env = {}
-
     try {
-      this.env = dotenv.parse(fs.readFileSync(options.path))
+      this.env = parse(fs.readFileSync(options.path))
     } catch (err) {}
   }
 
   apply (compiler) {
-    const plugin = Object.keys(this.example).reduce((definitions, key) => {
+    const plugin = Object.keys(this.env).reduce((definitions, key) => {
       const value = process.env[key] || this.env[key]
       definitions[`process.env.${key}`] = JSON.stringify(value)
       return definitions
