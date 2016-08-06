@@ -26,6 +26,13 @@
   },
   "keywords": [
     "dotenv",
+    "env",
+    "safe",
+    "environment",
+    "dotenv-safe",
+    "variables",
+    "process",
+    "process.env",
     "webpack",
     "plugin"
   ],
