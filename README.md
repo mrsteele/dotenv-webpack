@@ -31,7 +31,10 @@ module.exports = {
   ...
   plugins: [
     new Dotenv({
-      path: './.env' // can be ommitted as this is the default
+      path: './.env', // can be ommitted as this is the default
+      safe: false, // make true to use dotenv-safe and require varialbes
+      sample: './.env.example', // if safe=true, use this to define the safe env
+      systemvars: false // if true, also loads system env variables
     })
   ]
   ...

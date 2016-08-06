@@ -4,35 +4,38 @@ import { DefinePlugin } from 'webpack'
 
 class Dotenv {
   constructor (options) {
-    this.options = Object.assign({
+    options = Object.assign({
       path: './.env',
       safe: false,
-      sample: './env.example'
+      sample: './.env.example',
+      systemvars: true
     }, options)
 
-    this.blueprint = (this.safe) ? this.loadFile(this.options.sample) : this.loadFile(this.options.path)
-    this.env = this.loadFile(this.options.path)
+    let vars = (options.systemvars) ? Object.assign({}, process.env) : {}
+    const blueprint = (options.safe) ? this.loadFile(options.sample) : this.loadFile(options.path)
+    const env = this.loadFile(options.path)
+
+    Object.keys(blueprint).map(key => {
+      const value = env[key] || env[key]
+      if (!value) {
+        throw new Error(`Missing environment variable: ${key}`)
+      } else {
+        vars[key] = value
+      }
+    })
+
+    return new DefinePlugin({
+      'process.env': JSON.stringify(vars)
+    })
   }
 
   loadFile (file) {
     try {
       return dotenv.parse(fs.readFileSync(file))
     } catch (err) {
+      console.warn(`Failed to load ${file}.`)
       return {}
     }
-  }
-
-  apply (compiler) {
-    const plugin = Object.keys(this.blueprint).reduce((definitions, key) => {
-      const value = process.env[key] || this.env[key]
-      if (!value) {
-        throw new Error(`Missing environment variable: ${key}`)
-      }
-      definitions[`process.env.${key}`] = JSON.stringify(value)
-      return definitions
-    }, {})
-
-    compiler.apply(new DefinePlugin(plugin))
   }
 }
 
