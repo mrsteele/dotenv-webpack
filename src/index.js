@@ -1,4 +1,4 @@
-import dotenv from 'dotenv-safe'
+import dotenv from 'dotenv'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
@@ -8,12 +8,12 @@ class Dotenv {
       path: './.env',
       safe: false,
       sample: './.env.example',
-      systemvars: true
+      systemvars: false
     }, options)
 
     let vars = (options.systemvars) ? Object.assign({}, process.env) : {}
-    const blueprint = (options.safe) ? this.loadFile(options.sample) : this.loadFile(options.path)
     const env = this.loadFile(options.path)
+    const blueprint = (options.safe) ? this.loadFile(options.sample) : env
 
     Object.keys(blueprint).map(key => {
       const value = env[key] || env[key]
