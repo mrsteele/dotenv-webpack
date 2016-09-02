@@ -19,9 +19,11 @@ Include the package locally in your repository.
 
 `npm install dotenv-webpack --save`
 
-### Basic Usage
+### Usage
 
-The plugin can be installed with little-to-no configuration needed.
+The plugin can be installed with little-to-no configuration needed. Once installed, you can access the variables as expected within your code using `process.env`.
+
+The example bellow shows the defaults, as well as a description of each parameter.
 
 ```javascript
 // webpack.config.js
@@ -31,15 +33,22 @@ module.exports = {
   ...
   plugins: [
     new Dotenv({
-      path: './.env', // can be ommitted as this is the default
-      safe: false, // make true to use dotenv-safe and require variables
-      sample: './.env.example', // if safe=true, use this to define the safe env
-      systemvars: false // if true, also loads system env variables
+      path: './.my.env', // if not simply .env
+      safe: true // lets load the .env.example file as well
     })
   ]
   ...
 };
 ```
+
+### Properties
+
+Use the following properties to configure your instance.
+
+* **path** (`'./env'`) - The path to your environment variables.
+* **safe** (`false`) - If false, just load the variables, if true, load the file in the *sample* property.
+* **sample** (`'./.env.example'`) - The sample file to use for validation.
+* **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
 
 ### LICENSE
 
