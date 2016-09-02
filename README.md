@@ -46,7 +46,7 @@ module.exports = {
 Use the following properties to configure your instance.
 
 * **path** (`'./env'`) - The path to your environment variables.
-* **safe** (`false`) - If false, just load the variables, if true, load the `sample` file.
+* **safe** (`false`) - If false, just load the variables, if true, load the file in the *sample* property.
 * **sample** (`'./.env.example'`) - The sample file to use for validation.
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
 
