@@ -56,13 +56,13 @@ function runTests (Obj, name) {
 
     describe('Safe configuration', () => {
       it('Should load successfully if variables defined', () => {
-        envTest({path: envEmpty, safe: true, sample: envEmptyExample}).should.deep.equal(envEmptyJson)
-        envTest({path: envSimple, safe: true, sample: envSimpleExample}).should.deep.equal(envSimpleJson)
+        envTest({path: envEmpty, safe: envEmptyExample}).should.deep.equal(envEmptyJson)
+        envTest({path: envSimple, safe: envSimpleExample}).should.deep.equal(envSimpleJson)
       })
 
       it('Should fail if env does not match sample.', () => {
         function errorTest () {
-          envTest({path: envEmpty, safe: true, sample: envSimpleExample})
+          envTest({path: envEmpty, safe: envSimpleExample})
         }
 
         errorTest.should.throw('Missing environment variable')
@@ -76,7 +76,7 @@ function runTests (Obj, name) {
 
       it('Should fail on safe mode', () => {
         function errorTest () {
-          envTest({path: envMissingOne, safe: true, sample: envMissingOneExample})
+          envTest({path: envMissingOne, safe: envMissingOneExample})
         }
 
         errorTest.should.throw('Missing environment variable')
