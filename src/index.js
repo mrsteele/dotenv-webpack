@@ -7,13 +7,24 @@ class Dotenv {
     options = Object.assign({
       path: './.env',
       safe: false,
-      sample: './.env.example',
       systemvars: false
     }, options)
 
+    if (options.sample) {
+      console.warn('dotend-webpack: "options.sample" is a deprecated property. Please update your configuration to use simple "options.safe".')
+    }
+
     let vars = (options.systemvars) ? Object.assign({}, process.env) : {}
     const env = this.loadFile(options.path)
-    const blueprint = (options.safe) ? this.loadFile(options.sample) : env
+
+    let blueprint = env
+    if (options.safe) {
+      let file = './.env.example'
+      if (options.safe !== true) {
+        file = options.safe
+      }
+      blueprint = this.loadFile(file)
+    }
 
     Object.keys(blueprint).map(key => {
       const value = env[key] || env[key]
