@@ -4,17 +4,15 @@
   "version": "0.0.0-semantically-released",
   "main": "index.js",
   "scripts": {
-    "precommit": "npm run standard && npm run cover",
-    "standard": "standard",
+    "lint": "standard",
+    "validate-commit": "validate-commit-msg",
     "predoc": "rimraf docs",
     "doc": "jsdoc -c doc.json",
-    "cover": "nyc npm t && npm run coverage-report",
-    "coverage-report": "nyc report --reporter=lcov",
-    "test": "npm run build && _mocha --compilers js:babel-register",
+    "test": "npm run build && nyc _mocha --compilers js:babel-register && nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "travis": "npm run precommit && npm run coveralls",
+    "travis": "npm t && npm run coveralls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -51,13 +49,15 @@
     "babel-register": "^6.9.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
+    "ghooks": "^1.3.2",
     "jsdoc": "^3.4.0",
     "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
     "nyc": "^6.6.1",
     "rimraf": "^2.5.2",
     "semantic-release": "^4.3.5",
-    "standard": "^7.1.2"
+    "standard": "^7.1.2",
+    "validate-commit-msg": "^2.8.0"
   },
   "files": [
     "dist",
@@ -67,6 +67,15 @@
   ],
   "standard": {
     "parser": "babel-eslint"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run lint",
+      "commit-msg": "npm run validate-commit",
+      "pre-push": "npm t",
+      "post-merge": "npm install",
+      "post-rewrite": "npm install"
+    }
   },
   "browser": "./browser.js",
   "babel": {
