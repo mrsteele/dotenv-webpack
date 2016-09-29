@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "standard",
+    "validate-commit": "validate-commit-msg",
     "predoc": "rimraf docs",
     "doc": "jsdoc -c doc.json",
     "test": "npm run build && nyc _mocha --compilers js:babel-register && nyc report --reporter=lcov",
@@ -70,7 +71,7 @@
   "config": {
     "ghooks": {
       "pre-commit": "npm run lint",
-      "commit-msg": "validate-commit-msg",
+      "commit-msg": "npm run validate-commit",
       "pre-push": "npm t",
       "post-merge": "npm install",
       "post-rewrite": "npm install"
