@@ -2,6 +2,14 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
+/**
+ * The dotenv-webpack plugin.
+ * @param {Object} options - The parameters.
+ * @param {String} [path=./.env] - The location of the environment variable.
+ * @param {Bool|String} [safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
+ * @param {Bool} [systemvars=false] - If true, load system environment variables.
+ * @returns {webpack.DefinePlugin}
+ */
 class Dotenv {
   constructor (options) {
     options = Object.assign({
@@ -10,8 +18,12 @@ class Dotenv {
       systemvars: false
     }, options)
 
+    // Catch older packages, but hold their hand (just for a bit)
     if (options.sample) {
-      console.warn('dotend-webpack: "options.sample" is a deprecated property. Please update your configuration to use simple "options.safe".')
+      if (options.safe) {
+        options.safe = options.sample
+      }
+      console.warn('dotend-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.')
     }
 
     let vars = (options.systemvars) ? Object.assign({}, process.env) : {}
@@ -40,6 +52,11 @@ class Dotenv {
     })
   }
 
+  /**
+   * Load and parses a file.
+   * @param {String} file - The file to load.
+   * @returns {Object}
+   */
   loadFile (file) {
     try {
       return dotenv.parse(fs.readFileSync(file))
