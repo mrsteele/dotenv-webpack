@@ -82,6 +82,24 @@ function runTests (Obj, name) {
         errorTest.should.throw('Missing environment variable')
       })
     })
+
+    describe('Deprecated configuration', () => {
+      it('Should use safe when safe and sample set', () => {
+        envTest({path: envSimple, safe: true, sample: envSimpleExample}).should.deep.equal(envSimpleJson)
+      })
+
+      it('Should fail naturally when using deprecated values', () => {
+        function errorTest () {
+          envTest({path: envMissingOne, safe: true, sample: envMissingOneExample})
+        }
+
+        errorTest.should.throw('Missing environment variable')
+      })
+
+      it('Should not fail naturally when using deprecated values improperly', () => {
+        envTest({path: envMissingOne, sample: envMissingOneExample}).should.deep.equal(envSimpleJson)
+      })
+    })
   })
 }
 
