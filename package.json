@@ -4,15 +4,14 @@
   "version": "0.0.0-semantically-released",
   "main": "index.js",
   "scripts": {
+    "lint": "standard",
     "predoc": "rimraf docs",
     "doc": "jsdoc -c doc.json",
-    "cover": "nyc npm t && npm run coverage-report",
-    "coverage-report": "nyc report --reporter=lcov",
-    "test": "npm run build && _mocha --compilers js:babel-register",
+    "test": "npm run build && nyc _mocha --compilers js:babel-register && nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "travis": "npm run precommit && npm run coveralls",
+    "travis": "npm t && npm run coveralls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -56,7 +55,8 @@
     "nyc": "^6.6.1",
     "rimraf": "^2.5.2",
     "semantic-release": "^4.3.5",
-    "standard": "^7.1.2"
+    "standard": "^7.1.2",
+    "validate-commit-msg": "^2.8.0"
   },
   "files": [
     "dist",
@@ -69,9 +69,9 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "standard",
+      "pre-commit": "npm run lint",
       "commit-msg": "validate-commit-msg",
-      "pre-push": "cover",
+      "pre-push": "npm t",
       "post-merge": "npm install",
       "post-rewrite": "npm install"
     }
