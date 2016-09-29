@@ -97,7 +97,7 @@ function runTests (Obj, name) {
       })
 
       it('Should not fail naturally when using deprecated values improperly', () => {
-        envTest({path: envMissingOne, sample: envMissingOneExample}).should.deep.equal(envSimpleJson)
+        envTest({path: envMissingOne, sample: envMissingOneExample}).should.deep.equal(envMissingOneJson)
       })
     })
   })
