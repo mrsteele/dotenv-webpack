@@ -14,7 +14,7 @@
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "travis": "npm t && npm run coveralls",
+    "travis": "npm run lint && npm t && npm run coveralls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
