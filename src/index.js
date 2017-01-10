@@ -2,15 +2,16 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
-/**
- * The dotenv-webpack plugin.
- * @param {Object} options - The parameters.
- * @param {String} [path=./.env] - The location of the environment variable.
- * @param {Bool|String} [safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
- * @param {Bool} [systemvars=false] - If true, load system environment variables.
- * @returns {webpack.DefinePlugin}
- */
 class Dotenv {
+
+  /**
+   * The dotenv-webpack plugin.
+   * @param {Object} options - The parameters.
+   * @param {String} [options.path=./.env] - The location of the environment variable.
+   * @param {Bool|String} [options.safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
+   * @param {Bool} [options.systemvars=false] - If true, load system environment variables.
+   * @returns {webpack.DefinePlugin}
+   */
   constructor (options) {
     options = Object.assign({
       path: './.env',

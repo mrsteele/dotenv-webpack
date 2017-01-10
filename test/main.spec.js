@@ -24,6 +24,7 @@ function runTests (Obj, name) {
     return JSON.parse(new Obj(config).definitions['process.env'])
   }
 
+  /** @test {Dotenv} **/
   describe(name, () => {
     describe('Defaults', () => {
       it('Should be a function.', () => {
@@ -103,8 +104,8 @@ function runTests (Obj, name) {
   })
 }
 
-describe('Testing:', () => {
-  it('Should be able to run tests.', () => {
+describe('Tests', () => {
+  it('Should be able to run', () => {
     true.should.be.true
   })
 

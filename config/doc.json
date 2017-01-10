@@ -1,23 +1,8 @@
 {
-  "tags": {
-    "allowUnknownTags": true
-  },
-  "source": {
-    "include": [
-      "./src/"
-    ],
-    "excludePattern": "(^|\\/|\\\\)_"
-  },
-  "opts": {
-    "encoding": "utf8",
-    "recurse": true,
-    "private": false,
-    "destination": "./docs",
-    "readme": "./README.md",
-    "package": "./package.json",
-    "tutorials": "./tutorials"
-  },
-  "plugins": [
-    "plugins/markdown"
-  ]
+  "source": "./src",
+  "destination": "./docs",
+  "test": {
+    "type": "mocha",
+    "source": "./test"
+  }
 }
