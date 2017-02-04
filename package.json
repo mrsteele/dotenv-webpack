@@ -39,9 +39,11 @@
     "url": "https://github.com/mrsteele/dotenv-webpack/issues"
   },
   "homepage": "https://github.com/mrsteele/dotenv-webpack#readme",
+  "peerDependencies": {
+    "webpack": ">=1.14.0"
+  },
   "dependencies": {
-    "dotenv": "^4.0.0",
-    "webpack": "^1.14.0"
+    "dotenv": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
