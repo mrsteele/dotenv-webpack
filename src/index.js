@@ -44,12 +44,12 @@ class Dotenv {
       if (!value && options.safe) {
         throw new Error(`Missing environment variable: ${key}`)
       } else {
-        vars[key] = value
+        vars[key] = JSON.stringify(value)
       }
     })
 
     return new DefinePlugin({
-      'process.env': JSON.stringify(vars)
+      'process.env': vars
     })
   }
 
