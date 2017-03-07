@@ -30,7 +30,7 @@ class Dotenv {
     let vars = {}
     if (options.systemvars) {
       Object.keys(process.env).map(key => {
-        vars[key] = JSON.stringify(process.env[key])
+        vars[key] = process.env[key]
       })
     }
 
@@ -50,13 +50,16 @@ class Dotenv {
       if (!value && options.safe) {
         throw new Error(`Missing environment variable: ${key}`)
       } else {
-        vars[key] = JSON.stringify(value)
+        vars[key] = value
       }
     })
 
-    return new DefinePlugin({
-      'process.env': vars
-    })
+    const formatData = Object.keys(vars).reduce((obj, key) => {
+      obj[`process.env.${key}`] = JSON.stringify(vars[key])
+      return obj
+    }, {})
+
+    return new DefinePlugin(formatData)
   }
 
   /**
