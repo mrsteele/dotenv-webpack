@@ -49,7 +49,7 @@ module.exports = {
   ...
   plugins: [
     new Dotenv({
-      path: './.env // Path to .env file. Use a separate file for client configuration
+      path: './.env' // Path to .env file. Use a separate file for client configuration
       safe: true // lets load the .env.example file as well
     })
   ]
