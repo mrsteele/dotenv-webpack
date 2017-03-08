@@ -15,6 +15,7 @@ const envSimpleExample = path.resolve(__dirname, './envs/.simple.example')
 const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
 
+const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
 const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
@@ -36,8 +37,8 @@ function runTests (Obj, name) {
         envTest().should.be.an('object')
       })
 
-      it('Should be an empty object when no environment variables exist in .env file.', () => {
-        envTest().should.deep.equal(envEmptyJson)
+      it('Should include environment variables that exist in .env file.', () => {
+        envTest().should.deep.equal(envDefJson)
       })
     })
 
@@ -52,6 +53,22 @@ function runTests (Obj, name) {
         const value = envSimpleJson[key]
         test[key].should.equal(value)
         Object.keys(test).length.should.be.above(Object.keys(envSimpleJson).length)
+      })
+
+      it('Should be an empty object when no environment variables exist in .env file.', () => {
+        envTest({path: false}).should.deep.equal(envEmptyJson)
+      })
+
+      it('Should recognize safe-mode', () => {
+        envTest({safe: true}).should.deep.equal(envDefJson)
+      })
+
+      it('Should fail when not passing safe-mode', () => {
+        function errorTest () {
+          envTest({path: envEmpty, safe: true})
+        }
+
+        errorTest.should.throw('Missing environment variable')
       })
     })
 
