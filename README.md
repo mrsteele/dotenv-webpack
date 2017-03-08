@@ -29,6 +29,13 @@ Also, be aware that all information in your `.env` file will be included in the 
 
 The plugin can be installed with little-to-no configuration needed. Once installed, you can access the variables within your code using `process.env` as you would with `dotenv`.
 
+For example: `.env`
+```
+MY_VARIABLE=something_cool
+```
+
+`console.log(process.env.MY_VARIABLE);`
+
 The example bellow shows the defaults, as well as a description of each parameter.
 
 ###### Create a .env file
