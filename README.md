@@ -23,13 +23,13 @@ Include the package locally in your repository.
 
 `dotenv-webpack` wraps `dotenv` and `Webpack.DefinePlugin`. As such, it overwrites existing any existing `DefinePlugin` configurations. Also, like `DefinePlugin`, it does a text replace in the resulting bundle for any instances of `process.env`.
 
-Also, be aware that all information in your `.env` file will be included in the resulting bundle. Please do not share any secret information in your client bundle. Instead, make a separate `.client.env` file.
+Your `.env` files can include sensitive information. Because of this,`dotenv-webpack` will only include defined environment variables in the final bundle.
 
 ### Usage
 
 The plugin can be installed with little-to-no configuration needed. Once installed, you can access the variables within your code using `process.env` as you would with `dotenv`.
 
-The example bellow shows the defaults, as well as a description of each parameter.
+The example bellow shows a standard use-case.
 
 ###### Create a .env file
 
@@ -49,8 +49,8 @@ module.exports = {
   ...
   plugins: [
     new Dotenv({
-      path: './.env' // Path to .env file. Use a separate file for client configuration
-      safe: true // lets load the .env.example file as well
+      path: './.env' // Path to .env file (this is the default)
+      safe: true // load .env.example (defaults to "false" which does not use dotenv-safe)
     })
   ]
   ...
@@ -68,11 +68,7 @@ console.log(process.env.DB_HOST);
 ###### Resulting bundle
 ```
 // bundle.js
-console.log({
-	DB_HOST='127.0.0.1',
-	DB_PASS='foobar',
-	S3_API='mysecretkey'
-}.DB_HOST);
+console.log('127.0.0.1');
 ```
 
 ###### Recommended

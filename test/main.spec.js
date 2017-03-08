@@ -28,7 +28,7 @@ function runTests (Obj, name) {
   describe(name, () => {
     describe('Defaults', () => {
       it('Should be a function.', () => {
-        Obj.should.be.a.function
+        Obj.should.be.a('function')
       })
 
       // @todo - This one isn't a great test, but it wasn't really working for me.
@@ -105,10 +105,6 @@ function runTests (Obj, name) {
 }
 
 describe('Tests', () => {
-  it('Should be able to run', () => {
-    true.should.be.true
-  })
-
   runTests(Src, 'Source')
   runTests(Dist, 'Distribution')
 })
