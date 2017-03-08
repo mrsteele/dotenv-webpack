@@ -3,7 +3,6 @@ import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
 class Dotenv {
-
   /**
    * The dotenv-webpack plugin.
    * @param {Object} options - The parameters.
