@@ -60,9 +60,19 @@ module.exports = {
 ###### Use in your code
 
 ```
-// bundle.js
+// file1.js
 console.log(process.env.DB_HOST);
 // '127.0.0.1'
+```
+
+###### Resulting bundle
+```
+// bundle.js
+console.log({
+	DB_HOST='127.0.0.1',
+	DB_PASS='foobar',
+	S3_API='mysecretkey'
+}.DB_HOST);
 ```
 
 ###### Recommended
