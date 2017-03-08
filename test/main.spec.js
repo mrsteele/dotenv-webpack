@@ -16,12 +16,12 @@ const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
 
 const envEmptyJson = {}
-const envSimpleJson = {TEST: '"testing"'}
-const envMissingOneJson = {TEST: '""', TEST2: '"Hello"'}
+const envSimpleJson = {'process.env.TEST': '"testing"'}
+const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
 
 function runTests (Obj, name) {
   function envTest (config) {
-    return new Obj(config).definitions['process.env']
+    return new Obj(config).definitions
   }
 
   /** @test {Dotenv} **/
