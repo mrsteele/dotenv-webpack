@@ -1,6 +1,6 @@
 # dotenv-webpack
 
-A simple webpack plugin to support dotenv.
+A secure webpack plugin that supports dotenv and other environment variables and **only exposes what you choose and use**.
 
 ### Status
 
@@ -71,9 +71,13 @@ console.log(process.env.DB_HOST);
 console.log('127.0.0.1');
 ```
 
-###### Recommended
-Add `.env` to your `.gitignore` file
+### How Secure?
 
+Be allowing you to define exactly where you are loading environment variables from, and bundling only included variables in your project you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
+
+###### Recommended
+
+Add `.env` to your `.gitignore` file
 
 ### Properties
 
