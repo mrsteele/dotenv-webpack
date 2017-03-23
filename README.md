@@ -23,7 +23,7 @@ Include the package locally in your repository.
 
 `dotenv-webpack` wraps `dotenv` and `Webpack.DefinePlugin`. As such, it overwrites existing any existing `DefinePlugin` configurations. Also, like `DefinePlugin`, it does a text replace in the resulting bundle for any instances of `process.env`.
 
-Your `.env` files can include sensitive information. Because of this,`dotenv-webpack` will only include defined environment variables in the final bundle.
+Your `.env` files can include sensitive information. Because of this,`dotenv-webpack` will only expose environment variables that are **explicily referenced in your code** to your final bundle.
 
 ### Usage
 
@@ -71,9 +71,11 @@ console.log(process.env.DB_HOST);
 console.log('127.0.0.1');
 ```
 
+Note: the `.env` values for `DB_PASS` and  `S3_API` are **NOT** present in our bundle, as they were never referenced (as `process.env.[VAR_NAME]`) in the code.
+
 ### How Secure?
 
-Be allowing you to define exactly where you are loading environment variables from, and bundling only included variables in your project you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
+Be allowing you to define exactly where you are loading environment variables from, and bundling only variables in your project that are explicitly referenced in your code, you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
 
 ###### Recommended
 
