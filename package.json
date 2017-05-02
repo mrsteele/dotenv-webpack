@@ -59,9 +59,9 @@
     "nyc": "^10.1.2",
     "rimraf": "^2.6.1",
     "semantic-release": "^6.3.2",
-    "standard": "^9.0.1",
+    "standard": "^10.0.2",
     "validate-commit-msg": "^2.11.2",
-    "webpack": "^1.14.0"
+    "webpack": "^2.4.1"
   },
   "files": [
     "dist",
