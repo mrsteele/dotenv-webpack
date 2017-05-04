@@ -3,11 +3,11 @@
 // Tests suite
 import path from 'path'
 import chai from 'chai'
-chai.should()
 
-// The stars of the show
+// The star of the show
 import Src from '../src'
-import Dist from '../dist'
+
+chai.should()
 const envEmpty = path.resolve(__dirname, './envs/.empty')
 const envEmptyExample = path.resolve(__dirname, './envs/.empty.example')
 const envSimple = path.resolve(__dirname, './envs/.simple')
@@ -123,5 +123,4 @@ function runTests (Obj, name) {
 
 describe('Tests', () => {
   runTests(Src, 'Source')
-  runTests(Dist, 'Distribution')
 })

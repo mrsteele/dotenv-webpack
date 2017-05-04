@@ -2,7 +2,7 @@
   "name": "dotenv-webpack",
   "description": "A simple webpack plugin to support dotenv.",
   "version": "0.0.0-semantically-released",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "lint": "standard",
     "validate-commit": "validate-commit-msg",
@@ -65,7 +65,6 @@
   },
   "files": [
     "dist",
-    "browser.js",
     "LICENSE",
     "README.md"
   ],
@@ -81,7 +80,7 @@
       "post-rewrite": "npm install && npm prune"
     }
   },
-  "browser": "./browser.js",
+  "browser": "dist/browser.js",
   "babel": {
     "presets": [
       "es2015"
