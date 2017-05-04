@@ -1,7 +1,5 @@
 # dotenv-webpack
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/mrsteele/dotenv-webpack.svg)](https://greenkeeper.io/)
-
 A secure webpack plugin that supports dotenv and other environment variables and **only exposes what you choose and use**.
 
 ### Status
