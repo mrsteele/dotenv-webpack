@@ -2,7 +2,7 @@
   "name": "dotenv-webpack",
   "description": "A simple webpack plugin to support dotenv.",
   "version": "0.0.0-semantically-released",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "lint": "standard",
     "validate-commit": "validate-commit-msg",
@@ -13,8 +13,7 @@
     "posttest": "nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "travis": "npm run lint && npm t && npm run coveralls",
+    "travis": "npm run lint && npm t",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -52,20 +51,18 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.23.0",
     "chai": "^3.5.0",
-    "coveralls": "^2.12.0",
     "esdoc": "^0.5.2",
     "ghooks": "^2.0.0",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2",
     "rimraf": "^2.6.1",
     "semantic-release": "^6.3.2",
-    "standard": "^9.0.1",
+    "standard": "^10.0.2",
     "validate-commit-msg": "^2.11.2",
-    "webpack": "^1.14.0"
+    "webpack": "^2.4.1"
   },
   "files": [
     "dist",
-    "browser.js",
     "LICENSE",
     "README.md"
   ],
@@ -81,7 +78,7 @@
       "post-rewrite": "npm install && npm prune"
     }
   },
-  "browser": "./browser.js",
+  "browser": "dist/browser.js",
   "babel": {
     "presets": [
       "es2015"
