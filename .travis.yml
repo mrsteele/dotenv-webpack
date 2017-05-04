@@ -20,7 +20,7 @@ before_script:
 script:
   - npm run travis
   - codecov
-  - codeclimate-test-reporter
+  - codeclimate-test-reporter < coverage/lcov.info
 after_success:
   - npm run semantic-release
 branches:
