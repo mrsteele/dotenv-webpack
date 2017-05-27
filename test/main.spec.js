@@ -3,6 +3,7 @@
 // Tests suite
 import path from 'path'
 import chai from 'chai'
+import sinon from 'sinon'
 
 // The star of the show
 import Src from '../src'
@@ -19,6 +20,8 @@ const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
 const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+
+const consoleSpy = sinon.spy(console, 'warn')
 
 function runTests (Obj, name) {
   function envTest (config) {
@@ -106,6 +109,18 @@ function runTests (Obj, name) {
         envTest({path: envSimple, safe: true, sample: envSimpleExample}).should.deep.equal(envSimpleJson)
       })
 
+      it('Should display deprecation warning by default', () => {
+        consoleSpy.reset()
+        envTest({path: envSimple, safe: true, sample: envSimpleExample}).should.deep.equal(envSimpleJson)
+        consoleSpy.calledOnce.should.equal(true)
+      })
+
+      it('Should not display deprecation warning when silent mode enabled', () => {
+        consoleSpy.reset()
+        envTest({path: envSimple, safe: true, sample: envSimpleExample, silent: true}).should.deep.equal(envSimpleJson)
+        consoleSpy.called.should.equal(false)
+      })
+
       it('Should fail naturally when using deprecated values', () => {
         function errorTest () {
           envTest({path: envMissingOne, safe: true, sample: envMissingOneExample})
@@ -116,6 +131,20 @@ function runTests (Obj, name) {
 
       it('Should not fail naturally when using deprecated values improperly', () => {
         envTest({path: envMissingOne, sample: envMissingOneExample}).should.deep.equal(envMissingOneJson)
+      })
+    })
+
+    describe('Silent mode', () => {
+      it('Should display warning by default', () => {
+        consoleSpy.reset()
+        envTest({path: false})
+        consoleSpy.calledOnce.should.equal(true)
+      })
+
+      it('Should not display warning when silent mode enabled', () => {
+        consoleSpy.reset()
+        envTest({path: false, silent: true})
+        consoleSpy.called.should.equal(false)
       })
     })
   })
