@@ -25,9 +25,7 @@ class Dotenv {
       if (options.safe) {
         options.safe = options.sample
       }
-      if (!options.silent) {
-        console.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.')
-      }
+      this.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.', options.silent)
     }
 
     let vars = {}
@@ -75,11 +73,18 @@ class Dotenv {
     try {
       return dotenv.parse(fs.readFileSync(file))
     } catch (err) {
-      if (!silent) {
-        console.warn(`Failed to load ${file}.`)
-      }
+      this.warn(`Failed to load ${file}.`, silent)
       return {}
     }
+  }
+
+  /**
+   * Displays a console message if 'silent' is falsey
+   * @param {String} msg - The message.
+   * @param {Bool} silent - If true, display the message, if false, suppress the message.
+   */
+  warn (msg, silent) {
+    !silent && console.warn(msg)
   }
 }
 
