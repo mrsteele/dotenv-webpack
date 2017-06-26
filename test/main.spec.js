@@ -19,7 +19,7 @@ const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
-const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+const envMissingOneJson = {'process.env.TEST': undefined, 'process.env.TEST2': '"Hello"'}
 
 const consoleSpy = sinon.spy(console, 'warn')
 
