@@ -15,6 +15,7 @@ const envSimple = path.resolve(__dirname, './envs/.simple')
 const envSimpleExample = path.resolve(__dirname, './envs/.simple.example')
 const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
+const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
 
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
@@ -87,6 +88,12 @@ function runTests (Obj, name) {
         }
 
         errorTest.should.throw('Missing environment variable')
+      })
+
+      it('should pass if the systemvar satisfies the requirement', () => {
+        const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env.PATH']
+        PATH.should.be.a('string')
+        PATH.should.contain('/')
       })
     })
 
