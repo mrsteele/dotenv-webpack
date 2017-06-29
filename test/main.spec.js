@@ -15,12 +15,13 @@ const envSimple = path.resolve(__dirname, './envs/.simple')
 const envSimpleExample = path.resolve(__dirname, './envs/.simple.example')
 const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
+const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
 
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
-const envMissingOneJson = {'process.env.TEST': undefined, 'process.env.TEST2': '"Hello"'}
+const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
 
 const consoleSpy = sinon.spy(console, 'warn')
 
@@ -49,14 +50,6 @@ function runTests (Obj, name) {
     describe('Simple configuration', () => {
       it('Should load enviornment variables when they exist in the .env file.', () => {
         envTest({path: envSimple}).should.deep.equal(envSimpleJson)
-      })
-
-      it('Should allow system env variables', () => {
-        const test = envTest({path: envSimple, systemvars: true})
-        const key = Object.keys(envSimpleJson)[0]
-        const value = envSimpleJson[key]
-        test[key].should.equal(value)
-        Object.keys(test).length.should.be.above(Object.keys(envSimpleJson).length)
       })
 
       it('Should be an empty object when no environment variables exist in .env file.', () => {
@@ -89,11 +82,25 @@ function runTests (Obj, name) {
 
         errorTest.should.throw('Missing environment variable')
       })
+    })
+
+    describe('System variables', () => {
+      it('Should allow system env variables', () => {
+        const test = envTest({path: envSimple, systemvars: true})
+        const key = Object.keys(envSimpleJson)[0]
+        const value = envSimpleJson[key]
+        test[key].should.equal(value)
+        Object.keys(test).length.should.be.above(Object.keys(envSimpleJson).length)
+      })
 
       it('should pass if the systemvar satisfies the requirement', () => {
         const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env.PATH']
         PATH.should.be.a('string')
         PATH.should.contain('/')
+      })
+
+      it('should allow local variables to override systemvars', () => {
+        envTest({path: envSystemvars, systemvars: true})['process.env.PATH'].should.equal('""')
       })
     })
 
