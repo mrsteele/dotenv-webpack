@@ -47,7 +47,7 @@ class Dotenv {
     }
 
     Object.keys(blueprint).map(key => {
-      const value = env[key]
+      const value = (env[key] || env[key] === '') ? env[key] : vars[key]
       if (!value && options.safe) {
         throw new Error(`Missing environment variable: ${key}`)
       } else {
