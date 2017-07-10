@@ -6,7 +6,7 @@ A secure webpack plugin that supports dotenv and other environment variables and
 
 [![npm](https://img.shields.io/npm/v/dotenv-webpack.svg?maxAge=0&style=flat)](https://www.npmjs.com/package/dotenv-webpack)
 [![Travis](https://travis-ci.org/mrsteele/dotenv-webpack.svg?branch=master)](https://travis-ci.org/mrsteele/dotenv-webpack)
-[![Coverage Status](https://coveralls.io/repos/github/mrsteele/dotenv-webpack/badge.svg?branch=master)](https://coveralls.io/github/mrsteele/dotenv-webpack?branch=master)
+[![codecov](https://codecov.io/gh/mrsteele/dotenv-webpack/branch/master/graph/badge.svg)](https://codecov.io/gh/mrsteele/dotenv-webpack)
 [![Dependency Status](https://david-dm.org/mrsteele/dotenv-webpack.svg)](https://david-dm.org/mrsteele/dotenv-webpack)
 [![devDependency Status](https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg)](https://david-dm.org/mrsteele/dotenv-webpack?type=dev)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
