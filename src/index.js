@@ -45,6 +45,8 @@ class Dotenv {
       }
       blueprint = this.loadFile(file, options.silent)
     }
+    
+    blueprint = Object.assign(blueprint, process.env)
 
     Object.keys(blueprint).map(key => {
       const value = vars.hasOwnProperty(key) ? vars[key] : env[key]
