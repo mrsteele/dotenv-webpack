@@ -99,8 +99,8 @@ function runTests (Obj, name) {
         PATH.should.contain('/')
       })
 
-      it('should allow local variables to override systemvars', () => {
-        envTest({path: envSystemvars, systemvars: true})['process.env.PATH'].should.equal('""')
+      it('should not allow local variables to override systemvars', () => {
+        envTest({path: envSystemvars, systemvars: true})['process.env.PATH'].should.not.equal('""')
       })
     })
 
