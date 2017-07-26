@@ -48,10 +48,7 @@ const Dotenv = require('dotenv-webpack');
 module.exports = {
   ...
   plugins: [
-    new Dotenv({
-      path: './.env', // Path to .env file (this is the default)
-      safe: true // load .env.example (defaults to "false" which does not use dotenv-safe)
-    })
+    new Dotenv()
   ]
   ...
 };
@@ -89,6 +86,23 @@ Use the following properties to configure your instance.
 * **safe** (`false`) - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
 * **silent** (`false`) - If true, all warnings will be surpressed.
+
+The following example shows how to set any/all arguments.
+
+```javascript
+module.exports = {
+  ...
+  plugins: [
+    new Dotenv({
+      path: './some.other.env', // load this now instead of the ones in '.env'
+      safe: true, // load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
+      systemvars: true, // load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
+      silent: true // hide any errors
+    })
+  ]
+  ...
+};
+```
 
 ### LICENSE
 
