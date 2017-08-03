@@ -1,6 +1,6 @@
-# dotenv-webpack
-
 A secure webpack plugin that supports dotenv and other environment variables and **only exposes what you choose and use**.
+
+# dotenv-webpack
 
 <div align="center">
   <a href="https://www.npmjs.com/package/dotenv-webpack" target="_blank">
