@@ -4,14 +4,23 @@ A secure webpack plugin that supports dotenv and other environment variables and
 
 ### Status
 
-[![npm](https://img.shields.io/npm/v/dotenv-webpack.svg?maxAge=0&style=flat)](https://www.npmjs.com/package/dotenv-webpack)
-[![Travis](https://travis-ci.org/mrsteele/dotenv-webpack.svg?branch=master)](https://travis-ci.org/mrsteele/dotenv-webpack)
-[![codecov](https://codecov.io/gh/mrsteele/dotenv-webpack/branch/master/graph/badge.svg)](https://codecov.io/gh/mrsteele/dotenv-webpack)
-[![Dependency Status](https://david-dm.org/mrsteele/dotenv-webpack.svg)](https://david-dm.org/mrsteele/dotenv-webpack)
-[![devDependency Status](https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg)](https://david-dm.org/mrsteele/dotenv-webpack?type=dev)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
-[![npm](https://img.shields.io/npm/l/dotenv-webpack.svg?maxAge=0&style=flat)](https://raw.githubusercontent.com/mrsteele/dotenv-webpack/master/LICENSE)
-[![pull requests](https://img.shields.io/badge/pull%20requests-accepting-brightgreen.svg?style=flat)](https://github.com/mrsteele/dotenv-webpack/fork)
+<div align="center">
+  <a href="https://www.npmjs.com/package/dotenv-webpack" target="_blank">
+    <img alt="npm" src="https://img.shields.io/npm/v/dotenv-webpack.svg?maxAge=0&style=flat" />
+  </a>
+  <a href="https://travis-ci.org/mrsteele/dotenv-webpack" target="_blank">
+    <img alt="Travis" src="https://travis-ci.org/mrsteele/dotenv-webpack.svg?branch=master" />
+  </a>
+  <a href="https://codecov.io/gh/mrsteele/dotenv-webpack" target="_blank">
+    <img alt="codecov" src="https://codecov.io/gh/mrsteele/dotenv-webpack/branch/master/graph/badge.svg" />
+  </a>
+  <a href="https://david-dm.org/mrsteele/dotenv-webpack" target="_blank">
+    <img alt="Dependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack.svg" />
+  </a>
+  <a href="https://david-dm.org/mrsteele/dotenv-webpack?type=dev" target="_blank">
+    <img alt="devDependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg" />
+  </a>
+</div>
 
 ### Installation
 
