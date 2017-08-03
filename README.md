@@ -17,7 +17,11 @@ A secure webpack plugin that supports dotenv and other environment variables and
     <img alt="devDependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg" />
   </a>
   
-  <h1>dotenv-webpack</h1>
+  <h1>
+  <img width="30" heigth="30" src="https://raw.githubusercontent.com/motdotla/dotenv/master/dotenv.png" alt="dotenv" />
+  -
+  <img width="30" heigth="30" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack">
+  dotenv-webpack</h1>
 </div>
 
 ### Installation
