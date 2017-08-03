@@ -1,7 +1,5 @@
 A secure webpack plugin that supports dotenv and other environment variables and **only exposes what you choose and use**.
 
-# dotenv-webpack
-
 <div align="center">
   <a href="https://www.npmjs.com/package/dotenv-webpack" target="_blank">
     <img alt="npm" src="https://img.shields.io/npm/v/dotenv-webpack.svg?maxAge=0&style=flat" />
@@ -18,6 +16,8 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <a href="https://david-dm.org/mrsteele/dotenv-webpack?type=dev" target="_blank">
     <img alt="devDependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg" />
   </a>
+  
+  <h1>dotenv-webpack</h1>
 </div>
 
 ### Installation
