@@ -57,7 +57,7 @@
     "nyc": "^11.0.3",
     "rimraf": "^2.6.1",
     "semantic-release": "^6.3.6",
-    "sinon": "^3.0.0",
+    "sinon": "^3.1.0",
     "standard": "^10.0.2",
     "validate-commit-msg": "^2.12.1",
     "webpack": "^3.1.0"
