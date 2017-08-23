@@ -10,6 +10,7 @@ class Dotenv {
    * @param {Bool|String} [options.safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
    * @param {Bool} [options.systemvars=false] - If true, load system environment variables.
    * @param {Bool} [options.silent=false] - If true, suppress warnings, if false, display warnings.
+   * @param {Object} [options.additionalVars=null] - If null, ignore else build variables with the property name
    * @returns {webpack.DefinePlugin}
    */
   constructor (options) {
@@ -17,7 +18,8 @@ class Dotenv {
       path: './.env',
       safe: false,
       systemvars: false,
-      silent: false
+      silent: false,
+      additionalVars: null
     }, options)
 
     // Catch older packages, but hold their hand (just for a bit)
@@ -55,12 +57,22 @@ class Dotenv {
       }
     })
 
-    const formatData = Object.keys(vars).reduce((obj, key) => {
-      obj[`process.env.${key}`] = JSON.stringify(vars[key])
-      return obj
-    }, {})
+    const formatData = function () {
+      let envProps, additionalProps
+      envProps = Object.keys(vars).reduce((obj, key) => {
+        obj[`process.env.${key}`] = JSON.stringify(vars[key])
+        return obj
+      }, {})
+      if (options.additionalVars) {
+        additionalProps = Object.keys(options.additionalVars).reduce((obj, key) => {
+          obj[key] = JSON.stringify(options.additionalVars[key])
+          return obj
+        }, {})
+      }
+      return Object.assign(envProps, additionalProps)
+    }
 
-    return new DefinePlugin(formatData)
+    return new DefinePlugin(formatData())
   }
 
   /**
