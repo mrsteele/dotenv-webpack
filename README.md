@@ -28,7 +28,7 @@ A secure webpack plugin that supports dotenv and other environment variables and
 
 Include the package locally in your repository.
 
-`npm install dotenv-webpack --save`
+`npm install dotenv-webpack --save-dev`
 
 ### Description
 
@@ -67,14 +67,14 @@ module.exports = {
 
 ###### Use in your code
 
-```
+```javascript
 // file1.js
 console.log(process.env.DB_HOST);
 // '127.0.0.1'
 ```
 
 ###### Resulting bundle
-```
+```javascript
 // bundle.js
 console.log('127.0.0.1');
 ```
