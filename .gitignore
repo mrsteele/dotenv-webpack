@@ -16,7 +16,7 @@ docs
 .nyc_output
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
-dist
+# dist - removed for git publishing
 
 # Dependency directories
 node_modules
