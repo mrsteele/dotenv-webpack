@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import dotenvExpand from 'dotenv-expand'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
@@ -35,7 +36,8 @@ class Dotenv {
       })
     }
 
-    const env = this.loadFile(options.path, options.silent)
+    const env = dotenvExpand(this.loadFile(options.path, options.silent)).parsed
+    var myEnv = dotenv.config()
 
     let blueprint = env
     if (options.safe) {
