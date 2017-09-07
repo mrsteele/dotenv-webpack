@@ -1,8 +1,5 @@
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
-
-var myEnv = dotenv.config()
-dotenvExpand(myEnv)
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
