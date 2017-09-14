@@ -4,17 +4,9 @@
   "version": "0.0.0-semantically-released",
   "main": "index.js",
   "scripts": {
-    "lint": "standard",
-    "validate-commit": "validate-commit-msg",
-    "predoc": "rimraf docs",
-    "doc": "esdoc -c config/doc.json",
     "pretest": "npm run build",
     "test": "nyc _mocha --compilers js:babel-register",
-    "posttest": "nyc report --reporter=lcov",
-    "prebuild": "rimraf dist",
-    "build": "babel --copy-files --out-dir dist src",
-    "travis": "npm run lint && npm t",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "build": "babel --copy-files --out-dir dist src"
   },
   "repository": {
     "type": "git",
@@ -56,7 +48,6 @@
     "mocha": "^3.4.1",
     "nyc": "^11.0.3",
     "rimraf": "^2.6.1",
-    "semantic-release": "^7.0.1",
     "sinon": "^3.1.0",
     "standard": "^10.0.2",
     "validate-commit-msg": "^2.12.1",
@@ -69,15 +60,6 @@
   ],
   "standard": {
     "parser": "babel-eslint"
-  },
-  "config": {
-    "ghooks": {
-      "pre-commit": "npm run lint",
-      "commit-msg": "npm run validate-commit",
-      "pre-push": "npm t",
-      "post-merge": "npm install && npm prune",
-      "post-rewrite": "npm install && npm prune"
-    }
   },
   "browser": "browser.js",
   "babel": {

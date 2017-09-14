@@ -21,6 +21,7 @@ const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
+const envSimpleJsonAdditionalVars = {'process.env.TEST': '"testing"', 'VERSION': '"1.0.0"', 'TYPE': '"sample"'}
 const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
 
 const consoleSpy = sinon.spy(console, 'warn')
@@ -66,6 +67,10 @@ function runTests (Obj, name) {
         }
 
         errorTest.should.throw('Missing environment variable')
+      })
+
+      it('Should not fail with additional vars', () => {
+        envTest({path: envSimple, additionalVars: { VERSION: '1.0.0', TYPE: 'sample' }}).should.deep.equal(envSimpleJsonAdditionalVars)
       })
     })
 
