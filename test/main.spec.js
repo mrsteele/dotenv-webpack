@@ -161,6 +161,18 @@ function runTests (Obj, name) {
         consoleSpy.called.should.equal(false)
       })
     })
+
+    describe('Soft-fail mode turned off', () => {
+      it('Should propagate error without warning when file loading fails', () => {
+        function errorTest () {
+          envTest({path: 'non-existant', failSoftly: false})
+        }
+
+        consoleSpy.reset()
+        errorTest.should.throw("ENOENT: no such file or directory, open 'non-existant'")
+        consoleSpy.called.should.equal(false)
+      })
+    })
   })
 }
 

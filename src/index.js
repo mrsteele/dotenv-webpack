@@ -10,6 +10,7 @@ class Dotenv {
    * @param {Bool|String} [options.safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
    * @param {Bool} [options.systemvars=false] - If true, load system environment variables.
    * @param {Bool} [options.silent=false] - If true, suppress warnings, if false, display warnings.
+   * @param {Bool} [options.failSoftly=true] - If true, catch load error, if false, raise/propagate load error.
    * @returns {webpack.DefinePlugin}
    */
   constructor (options) {
@@ -17,7 +18,8 @@ class Dotenv {
       path: './.env',
       safe: false,
       systemvars: false,
-      silent: false
+      silent: false,
+      failSoftly: true
     }, options)
 
     // Catch older packages, but hold their hand (just for a bit)
@@ -35,7 +37,7 @@ class Dotenv {
       })
     }
 
-    const env = this.loadFile(options.path, options.silent)
+    const env = this.loadFile(options.path, options.silent, options.failSoftly)
 
     let blueprint = env
     if (options.safe) {
@@ -43,7 +45,7 @@ class Dotenv {
       if (options.safe !== true) {
         file = options.safe
       }
-      blueprint = this.loadFile(file, options.silent)
+      blueprint = this.loadFile(file, options.silent, options.failSoftly)
     }
 
     Object.keys(blueprint).map(key => {
@@ -67,14 +69,19 @@ class Dotenv {
    * Load and parses a file.
    * @param {String} file - The file to load.
    * @param {Bool} silent - If true, suppress warnings, if false, display warnings.
+   * @param {Bool} failSoftly - If true, catch load error, if false, raise/propagate load error.
    * @returns {Object}
    */
-  loadFile (file, silent) {
+  loadFile (file, silent, failSoftly) {
     try {
       return dotenv.parse(fs.readFileSync(file))
     } catch (err) {
-      this.warn(`Failed to load ${file}.`, silent)
-      return {}
+      if (failSoftly) {
+        this.warn(`Failed to load ${file}.`, silent)
+        return {}
+      }
+
+      throw err
     }
   }
 
