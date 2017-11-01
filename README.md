@@ -28,7 +28,7 @@ A secure webpack plugin that supports dotenv and other environment variables and
 
 Include the package locally in your repository.
 
-`npm install dotenv-webpack --save-dev`
+`npm install dotenv-webpack --save`
 
 ### Description
 
