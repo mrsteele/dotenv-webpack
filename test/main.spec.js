@@ -17,11 +17,13 @@ const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
 const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
+const envExport = path.resolve(__dirname, './envs/.export')
 
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
 const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+const envExportJson = {'process.env.TEST': '"testing"'}
 
 const consoleSpy = sinon.spy(console, 'warn')
 
@@ -48,7 +50,7 @@ function runTests (Obj, name) {
     })
 
     describe('Simple configuration', () => {
-      it('Should load enviornment variables when they exist in the .env file.', () => {
+      it('Should load environment variables when they exist in the .env file.', () => {
         envTest({path: envSimple}).should.deep.equal(envSimpleJson)
       })
 
@@ -159,6 +161,12 @@ function runTests (Obj, name) {
         consoleSpy.reset()
         envTest({path: false, silent: true})
         consoleSpy.called.should.equal(false)
+      })
+    })
+
+    describe('Exports', () => {
+      it('Should load environment variables when they are exported in the .env file.', () => {
+        envTest({path: envExport}).should.deep.equal(envExportJson)
       })
     })
   })
