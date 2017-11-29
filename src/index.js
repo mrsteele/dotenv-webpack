@@ -12,43 +12,42 @@ class Dotenv {
    * @param {Bool} [options.silent=false] - If true, suppress warnings, if false, display warnings.
    * @returns {webpack.DefinePlugin}
    */
-  constructor (options) {
-    options = Object.assign({
-      path: './.env',
-      safe: false,
-      systemvars: false,
-      silent: false
-    }, options)
-
+  constructor ({
+    path = './.env',
+    safe,
+    systemvars,
+    silent,
+    sample
+  } = {}) {
     // Catch older packages, but hold their hand (just for a bit)
-    if (options.sample) {
-      if (options.safe) {
-        options.safe = options.sample
+    if (sample) {
+      if (safe) {
+        safe = sample
       }
-      this.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.', options.silent)
+      this.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.', silent)
     }
 
     let vars = {}
-    if (options.systemvars) {
+    if (systemvars) {
       Object.keys(process.env).map(key => {
         vars[key] = process.env[key]
       })
     }
 
-    const env = this.loadFile(options.path, options.silent)
+    const env = this.loadFile(path, silent)
 
     let blueprint = env
-    if (options.safe) {
+    if (safe) {
       let file = './.env.example'
-      if (options.safe !== true) {
-        file = options.safe
+      if (safe !== true) {
+        file = safe
       }
-      blueprint = this.loadFile(file, options.silent)
+      blueprint = this.loadFile(file, silent)
     }
 
     Object.keys(blueprint).map(key => {
       const value = vars.hasOwnProperty(key) ? vars[key] : env[key]
-      if (!value && options.safe) {
+      if (!value && safe) {
         throw new Error(`Missing environment variable: ${key}`)
       } else {
         vars[key] = value
