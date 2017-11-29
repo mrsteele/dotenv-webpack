@@ -55,7 +55,14 @@ class Dotenv {
     })
 
     const formatData = Object.keys(vars).reduce((obj, key) => {
-      obj[`process.env.${key}`] = JSON.stringify(vars[key])
+      let value = vars[key]
+      // Do not double-stringify booleans
+      if (value === 'true') {
+        value = true
+      } else if (value === 'false') {
+        value = false
+      }
+      obj[`process.env.${key}`] = JSON.stringify(value)
       return obj
     }, {})
 

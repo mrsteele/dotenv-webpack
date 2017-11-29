@@ -17,11 +17,13 @@ const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
 const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
+const envWithBool = path.resolve(__dirname, './envs/.withbool')
 
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
 const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+const envWithBoolJson = {'process.env.FALSEY_VALUE': 'false', 'process.env.TRUTHY_VALUE': 'true'}
 
 const consoleSpy = sinon.spy(console, 'warn')
 
@@ -159,6 +161,12 @@ function runTests (Obj, name) {
         consoleSpy.reset()
         envTest({path: false, silent: true})
         consoleSpy.called.should.equal(false)
+      })
+    })
+
+    describe('With a boolean value', () => {
+      it('Should set booleans to be a single-quoted string.', () => {
+        envTest({path: envWithBool}).should.deep.equal(envWithBoolJson)
       })
     })
   })
