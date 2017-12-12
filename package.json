@@ -14,8 +14,7 @@
     "posttest": "nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
-    "travis": "npm run lint && npm t",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "travis": "npm run lint && npm t"
   },
   "repository": {
     "type": "git",

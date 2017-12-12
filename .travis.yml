@@ -22,7 +22,7 @@ script:
   - codecov
   - codeclimate-test-reporter < coverage/lcov.info
 after_success:
-  - semantic-release
+  - semantic-release pre && npm publish && semantic-release post
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
