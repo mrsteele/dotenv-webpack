@@ -17,11 +17,13 @@ const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
 const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
+const envExpanded = path.resolve(__dirname, './envs/.expanded')
 
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
 const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+const envExpandedJson = {'process.env.BASIC': '"basic"', 'process.env.BASIC_EXPAND': '"basic"'}
 
 const consoleSpy = sinon.spy(console, 'warn')
 
@@ -44,6 +46,10 @@ function runTests (Obj, name) {
 
       it('Should include environment variables that exist in .env file.', () => {
         envTest().should.deep.equal(envDefJson)
+      })
+
+      it('Should expand variables', () => {
+        envTest({path: envExpanded}).should.deep.equal(envExpandedJson)
       })
     })
 

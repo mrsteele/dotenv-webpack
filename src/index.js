@@ -2,6 +2,20 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
+// Mostly taken from here: https://github.com/motdotla/dotenv-expand/blob/master/lib/main.js#L4
+const interpolate = (env, vars) => {
+  var matches = env.match(/\$([a-zA-Z0-9_]+)|\${([a-zA-Z0-9_]+)}/g) || []
+
+  matches.forEach((match) => {
+    var key = match.replace(/\$|{|}/g, '')
+    var variable = vars[key] || ''
+    variable = interpolate(variable)
+    env = env.replace(match, variable)
+  })
+
+  return env
+}
+
 class Dotenv {
   /**
    * The dotenv-webpack plugin.
@@ -55,7 +69,7 @@ class Dotenv {
     })
 
     const formatData = Object.keys(vars).reduce((obj, key) => {
-      obj[`process.env.${key}`] = JSON.stringify(vars[key])
+      obj[`process.env.${key}`] = JSON.stringify(interpolate(vars[key], vars))
       return obj
     }, {})
 
