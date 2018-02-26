@@ -61,9 +61,7 @@
     "webpack": "^3.10.0"
   },
   "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
+    "dist"
   ],
   "standard": {
     "parser": "babel-eslint"
