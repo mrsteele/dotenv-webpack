@@ -6,10 +6,10 @@ cache:
 notifications:
   email: false
 node_js:
+  - 'node'
+  - 'lts/*'
   - '8'
   - '7'
-  - '6'
-  - '5'
 before_install:
   - npm i -g npm@^2.0.0
 install:
@@ -22,7 +22,7 @@ script:
   - codecov
   - codeclimate-test-reporter < coverage/lcov.info
 after_success:
-  - semantic-release pre && npm publish && semantic-release post
+  - semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
