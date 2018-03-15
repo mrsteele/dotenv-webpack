@@ -34,7 +34,7 @@ Include the package locally in your repository.
 
 `dotenv-webpack` wraps `dotenv` and `Webpack.DefinePlugin`. As such, it does a text replace in the resulting bundle for any instances of `process.env`.
 
-Your `.env` files can include sensitive information. Because of this,`dotenv-webpack` will only expose environment variables that are **explicily referenced in your code** to your final bundle.
+Your `.env` files can include sensitive information. Because of this,`dotenv-webpack` will only expose environment variables that are **explicitly referenced in your code** to your final bundle.
 
 ### Usage
 
