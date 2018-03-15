@@ -4,12 +4,12 @@ import { DefinePlugin } from 'webpack'
 
 // Mostly taken from here: https://github.com/motdotla/dotenv-expand/blob/master/lib/main.js#L4
 const interpolate = (env, vars) => {
-  var matches = env.match(/\$([a-zA-Z0-9_]+)|\${([a-zA-Z0-9_]+)}/g) || []
+  const matches = env.match(/\$([a-zA-Z0-9_]+)|\${([a-zA-Z0-9_]+)}/g) || []
 
   matches.forEach((match) => {
-    var key = match.replace(/\$|{|}/g, '')
-    var variable = vars[key] || ''
-    variable = interpolate(variable)
+    const key = match.replace(/\$|{|}/g, '')
+    let variable = vars[key] || ''
+    variable = interpolate(variable, vars)
     env = env.replace(match, variable)
   })
 

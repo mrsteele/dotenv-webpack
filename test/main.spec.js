@@ -19,11 +19,35 @@ const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
 const envExpanded = path.resolve(__dirname, './envs/.expanded')
 
-const envDefJson = {'process.env.TEST': '"hi"'}
-const envEmptyJson = {}
-const envSimpleJson = {'process.env.TEST': '"testing"'}
-const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
-const envExpandedJson = {'process.env.BASIC': '"basic"', 'process.env.BASIC_EXPAND': '"basic"'}
+const buildExpectation = (obj) => Object.keys(obj).reduce((all, key) => {
+  all[`process.env.${key}`] = JSON.stringify(obj[key])
+  return all
+}, {})
+
+const envDefJson = buildExpectation({TEST: 'hi'})
+const envEmptyJson = buildExpectation({})
+const envSimpleJson = buildExpectation({TEST: 'testing'})
+const envMissingOneJson = buildExpectation({TEST: '', TEST2: 'Hello'})
+const envExpandedJson = buildExpectation({
+  NODE_ENV: 'test',
+  BASIC: 'basic',
+  BASIC_EXPAND: 'basic',
+  MACHINE: 'machine_env',
+  MACHINE_EXPAND: 'machine_env',
+  UNDEFINED_EXPAND: '',
+  ESCAPED_EXPAND: '$ESCAPED',
+  MONGOLAB_DATABASE: 'heroku_db',
+  MONGOLAB_USER: 'username',
+  MONGOLAB_PASSWORD: 'password',
+  MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
+  MONGOLAB_PORT: '12345',
+  MONGOLAB_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+  MONGOLAB_USER_RECURSIVELY: 'username:password',
+  MONGOLAB_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+  WITHOUT_CURLY_BRACES_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+  WITHOUT_CURLY_BRACES_USER_RECURSIVELY: 'username:password',
+  WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db'
+})
 
 const consoleSpy = sinon.spy(console, 'warn')
 
