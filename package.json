@@ -3,6 +3,7 @@
   "description": "A simple webpack plugin to support dotenv.",
   "version": "0.0.0-semantically-released",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "precommit": "npm run lint",
     "prepush": "npm t",
@@ -42,6 +43,7 @@
     "webpack": "^1 || ^2 || ^3 || ^4"
   },
   "dependencies": {
+    "@types/webpack": "^4.1.2",
     "dotenv": "^5.0.1"
   },
   "devDependencies": {
@@ -61,7 +63,8 @@
     "webpack": "^3.10.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "standard": {
     "parser": "babel-eslint"
