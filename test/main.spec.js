@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global describe, it, beforeEach */
 
 // Tests suite
 import path from 'path'
@@ -32,6 +32,10 @@ function runTests (Obj, name) {
 
   /** @test {Dotenv} **/
   describe(name, () => {
+    beforeEach(() => {
+      consoleSpy.resetHistory()
+    })
+
     describe('Defaults', () => {
       it('Should be a function.', () => {
         Obj.should.be.a('function')
@@ -124,13 +128,11 @@ function runTests (Obj, name) {
       })
 
       it('Should display deprecation warning by default', () => {
-        consoleSpy.reset()
         envTest({path: envSimple, safe: true, sample: envSimpleExample}).should.deep.equal(envSimpleJson)
         consoleSpy.calledOnce.should.equal(true)
       })
 
       it('Should not display deprecation warning when silent mode enabled', () => {
-        consoleSpy.reset()
         envTest({path: envSimple, safe: true, sample: envSimpleExample, silent: true}).should.deep.equal(envSimpleJson)
         consoleSpy.called.should.equal(false)
       })
@@ -150,13 +152,11 @@ function runTests (Obj, name) {
 
     describe('Silent mode', () => {
       it('Should display warning by default', () => {
-        consoleSpy.reset()
         envTest({path: false})
         consoleSpy.calledOnce.should.equal(true)
       })
 
       it('Should not display warning when silent mode enabled', () => {
-        consoleSpy.reset()
         envTest({path: false, silent: true})
         consoleSpy.called.should.equal(false)
       })
