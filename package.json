@@ -58,7 +58,7 @@
     "rimraf": "^2.6.2",
     "sinon": "^5.0.0",
     "standard": "^11.0.0",
-    "webpack": "^4.6.0"
+    "webpack": "^4.11.0"
   },
   "files": [
     "dist"
