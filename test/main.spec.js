@@ -98,12 +98,24 @@ function runTests (Obj, name) {
       })
 
       it('should pass if the systemvar satisfies the requirement', () => {
+        if (process.platform === 'win32' && Object.keys(process.env).includes('Path')) {
+          // On Windows, rename Path variable to PATH
+          const winVar = process.env.Path
+          delete process.env.Path
+          process.env.PATH = winVar
+        }
         const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env.PATH']
         PATH.should.be.a('string')
-        PATH.should.contain('/')
+        PATH.should.contain(path.sep)
       })
 
       it('should not allow local variables to override systemvars', () => {
+        if (process.platform === 'win32' && Object.keys(process.env).includes('Path')) {
+          // On Windows, rename Path variable to PATH
+          const winVar = process.env.Path
+          delete process.env.Path
+          process.env.PATH = winVar
+        }
         envTest({path: envSystemvars, systemvars: true})['process.env.PATH'].should.not.equal('""')
       })
     })
