@@ -7,9 +7,9 @@ class Dotenv {
    * The dotenv-webpack plugin.
    * @param {Object} options - The parameters.
    * @param {String} [options.path=./.env] - The location of the environment variable.
-   * @param {Bool|String} [options.safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
-   * @param {Bool} [options.systemvars=false] - If true, load system environment variables.
-   * @param {Bool} [options.silent=false] - If true, suppress warnings, if false, display warnings.
+   * @param {Boolean|String} [options.safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
+   * @param {Boolean} [options.systemvars=false] - If true, load system environment variables.
+   * @param {Boolean} [options.silent=false] - If true, suppress warnings, if false, display warnings.
    * @returns {webpack.DefinePlugin}
    */
   constructor ({
@@ -65,7 +65,7 @@ class Dotenv {
   /**
    * Load and parses a file.
    * @param {String} file - The file to load.
-   * @param {Bool} silent - If true, suppress warnings, if false, display warnings.
+   * @param {Boolean} silent - If true, suppress warnings, if false, display warnings.
    * @returns {Object}
    */
   loadFile (file, silent) {
@@ -80,7 +80,7 @@ class Dotenv {
   /**
    * Displays a console message if 'silent' is falsey
    * @param {String} msg - The message.
-   * @param {Bool} silent - If true, display the message, if false, suppress the message.
+   * @param {Boolean} silent - If true, display the message, if false, suppress the message.
    */
   warn (msg, silent) {
     !silent && console.warn(msg)
