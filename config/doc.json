@@ -1,8 +1,13 @@
 {
   "source": "./src",
   "destination": "./docs",
-  "test": {
-    "type": "mocha",
-    "source": "./test"
-  }
+  "plugins": [{
+    "name": "esdoc-standard-plugin",
+    "option": {
+      "test": {
+        "type": "mocha",
+        "source": "./test"
+      }
+    }
+  }]
 }
