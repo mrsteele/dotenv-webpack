@@ -17,6 +17,7 @@ class Dotenv {
     safe,
     systemvars,
     silent,
+    allowEmptyValues = false,
     sample
   } = {}) {
     // Catch older packages, but hold their hand (just for a bit)
@@ -47,7 +48,11 @@ class Dotenv {
 
     Object.keys(blueprint).map(key => {
       const value = vars.hasOwnProperty(key) ? vars[key] : env[key]
-      if (!value && safe) {
+
+      const isMissing = typeof value === 'undefined' || value === null ||
+        (!allowEmptyValues && value === '')
+
+      if (safe && isMissing) {
         throw new Error(`Missing environment variable: ${key}`)
       } else {
         vars[key] = value

@@ -95,6 +95,7 @@ Use the following properties to configure your instance.
 
 * **path** (`'./.env'`) - The path to your environment variables.
 * **safe** (`false`) - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
+* **allowEmptyValues** (`false`) - Whether to allow empty strings in safe mode. If false, will throw an error if any env variables are empty (but only if safe mode is enabled).
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
 * **silent** (`false`) - If true, all warnings will be surpressed.
 

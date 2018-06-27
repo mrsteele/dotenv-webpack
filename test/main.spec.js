@@ -13,15 +13,18 @@ const envEmpty = path.resolve(__dirname, './envs/.empty')
 const envEmptyExample = path.resolve(__dirname, './envs/.empty.example')
 const envSimple = path.resolve(__dirname, './envs/.simple')
 const envSimpleExample = path.resolve(__dirname, './envs/.simple.example')
-const envMissingOne = path.resolve(__dirname, './envs/.missingone')
-const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
+const envOneEmpty = path.resolve(__dirname, './envs/.oneempty')
+const envOneEmptyExample = path.resolve(__dirname, './envs/.oneempty.example')
+const envOneMissing = path.resolve(__dirname, './envs/.onemissing')
+const envOneMissingExample = path.resolve(__dirname, './envs/.onemissing.example')
 const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
 
 const envDefJson = {'process.env.TEST': '"hi"'}
 const envEmptyJson = {}
 const envSimpleJson = {'process.env.TEST': '"testing"'}
-const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+const envOneEmptyJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+const envOneMissingJson = {'process.env.TEST2': '"Hello"'}
 
 const consoleSpy = sinon.spy(console, 'warn')
 
@@ -108,14 +111,28 @@ function runTests (Obj, name) {
       })
     })
 
-    describe('Missing a variable', () => {
+    describe('Empty variable ("")', () => {
       it('Should load fine (not-safe)', () => {
-        envTest({path: envMissingOne}).should.deep.equal(envMissingOneJson)
+        envTest({path: envOneEmpty}).should.deep.equal(envOneEmptyJson)
       })
 
       it('Should fail on safe mode', () => {
         function errorTest () {
-          envTest({path: envMissingOne, safe: envMissingOneExample})
+          envTest({path: envOneEmpty, safe: envOneEmptyExample})
+        }
+
+        errorTest.should.throw('Missing environment variable')
+      })
+    })
+
+    describe('Missing a variable', () => {
+      it('Should load fine (not-safe)', () => {
+        envTest({path: envOneMissing}).should.deep.equal(envOneMissingJson)
+      })
+
+      it('Should fail on safe mode if allowEmptyValues is false (default)', () => {
+        function errorTest () {
+          envTest({path: envOneMissing, safe: envOneMissingExample, allowEmptyValues: true})
         }
 
         errorTest.should.throw('Missing environment variable')
@@ -139,14 +156,14 @@ function runTests (Obj, name) {
 
       it('Should fail naturally when using deprecated values', () => {
         function errorTest () {
-          envTest({path: envMissingOne, safe: true, sample: envMissingOneExample})
+          envTest({path: envOneEmpty, safe: true, sample: envOneEmptyExample})
         }
 
         errorTest.should.throw('Missing environment variable')
       })
 
       it('Should not fail naturally when using deprecated values improperly', () => {
-        envTest({path: envMissingOne, sample: envMissingOneExample}).should.deep.equal(envMissingOneJson)
+        envTest({path: envOneEmpty, sample: envOneEmptyExample}).should.deep.equal(envOneEmptyJson)
       })
     })
 
