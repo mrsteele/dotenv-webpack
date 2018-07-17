@@ -83,7 +83,7 @@ Note: the `.env` values for `DB_PASS` and  `S3_API` are **NOT** present in our b
 
 ### How Secure?
 
-Be allowing you to define exactly where you are loading environment variables from, and bundling only variables in your project that are explicitly referenced in your code, you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
+By allowing you to define exactly where you are loading environment variables from, and bundling only variables in your project that are explicitly referenced in your code, you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
 
 ###### Recommended
 
