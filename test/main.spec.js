@@ -18,10 +18,10 @@ const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example
 const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
 
-const envDefJson = {'process.env.TEST': '"hi"'}
+const envDefJson = { 'process.env.TEST': '"hi"' }
 const envEmptyJson = {}
-const envSimpleJson = {'process.env.TEST': '"testing"'}
-const envMissingOneJson = {'process.env.TEST': '""', 'process.env.TEST2': '"Hello"'}
+const envSimpleJson = { 'process.env.TEST': '"testing"' }
+const envMissingOneJson = { 'process.env.TEST': '""', 'process.env.TEST2': '"Hello"' }
 
 const consoleSpy = sinon.spy(console, 'warn')
 
@@ -53,20 +53,20 @@ function runTests (Obj, name) {
 
     describe('Simple configuration', () => {
       it('Should load enviornment variables when they exist in the .env file.', () => {
-        envTest({path: envSimple}).should.deep.equal(envSimpleJson)
+        envTest({ path: envSimple }).should.deep.equal(envSimpleJson)
       })
 
       it('Should be an empty object when no environment variables exist in .env file.', () => {
-        envTest({path: false}).should.deep.equal(envEmptyJson)
+        envTest({ path: false }).should.deep.equal(envEmptyJson)
       })
 
       it('Should recognize safe-mode', () => {
-        envTest({safe: true}).should.deep.equal(envDefJson)
+        envTest({ safe: true }).should.deep.equal(envDefJson)
       })
 
       it('Should fail when not passing safe-mode', () => {
         function errorTest () {
-          envTest({path: envEmpty, safe: true})
+          envTest({ path: envEmpty, safe: true })
         }
 
         errorTest.should.throw('Missing environment variable')
@@ -75,13 +75,13 @@ function runTests (Obj, name) {
 
     describe('Safe configuration', () => {
       it('Should load successfully if variables defined', () => {
-        envTest({path: envEmpty, safe: envEmptyExample}).should.deep.equal(envEmptyJson)
-        envTest({path: envSimple, safe: envSimpleExample}).should.deep.equal(envSimpleJson)
+        envTest({ path: envEmpty, safe: envEmptyExample }).should.deep.equal(envEmptyJson)
+        envTest({ path: envSimple, safe: envSimpleExample }).should.deep.equal(envSimpleJson)
       })
 
       it('Should fail if env does not match sample.', () => {
         function errorTest () {
-          envTest({path: envEmpty, safe: envSimpleExample})
+          envTest({ path: envEmpty, safe: envSimpleExample })
         }
 
         errorTest.should.throw('Missing environment variable')
@@ -90,7 +90,7 @@ function runTests (Obj, name) {
 
     describe('System variables', () => {
       it('Should allow system env variables', () => {
-        const test = envTest({path: envSimple, systemvars: true})
+        const test = envTest({ path: envSimple, systemvars: true })
         const key = Object.keys(envSimpleJson)[0]
         const value = envSimpleJson[key]
         test[key].should.equal(value)
@@ -116,18 +116,18 @@ function runTests (Obj, name) {
           delete process.env.Path
           process.env.PATH = winVar
         }
-        envTest({path: envSystemvars, systemvars: true})['process.env.PATH'].should.not.equal('""')
+        envTest({ path: envSystemvars, systemvars: true })['process.env.PATH'].should.not.equal('""')
       })
     })
 
     describe('Missing a variable', () => {
       it('Should load fine (not-safe)', () => {
-        envTest({path: envMissingOne}).should.deep.equal(envMissingOneJson)
+        envTest({ path: envMissingOne }).should.deep.equal(envMissingOneJson)
       })
 
       it('Should fail on safe mode', () => {
         function errorTest () {
-          envTest({path: envMissingOne, safe: envMissingOneExample})
+          envTest({ path: envMissingOne, safe: envMissingOneExample })
         }
 
         errorTest.should.throw('Missing environment variable')
@@ -136,40 +136,40 @@ function runTests (Obj, name) {
 
     describe('Deprecated configuration', () => {
       it('Should use safe when safe and sample set', () => {
-        envTest({path: envSimple, safe: true, sample: envSimpleExample}).should.deep.equal(envSimpleJson)
+        envTest({ path: envSimple, safe: true, sample: envSimpleExample }).should.deep.equal(envSimpleJson)
       })
 
       it('Should display deprecation warning by default', () => {
-        envTest({path: envSimple, safe: true, sample: envSimpleExample}).should.deep.equal(envSimpleJson)
+        envTest({ path: envSimple, safe: true, sample: envSimpleExample }).should.deep.equal(envSimpleJson)
         consoleSpy.calledOnce.should.equal(true)
       })
 
       it('Should not display deprecation warning when silent mode enabled', () => {
-        envTest({path: envSimple, safe: true, sample: envSimpleExample, silent: true}).should.deep.equal(envSimpleJson)
+        envTest({ path: envSimple, safe: true, sample: envSimpleExample, silent: true }).should.deep.equal(envSimpleJson)
         consoleSpy.called.should.equal(false)
       })
 
       it('Should fail naturally when using deprecated values', () => {
         function errorTest () {
-          envTest({path: envMissingOne, safe: true, sample: envMissingOneExample})
+          envTest({ path: envMissingOne, safe: true, sample: envMissingOneExample })
         }
 
         errorTest.should.throw('Missing environment variable')
       })
 
       it('Should not fail naturally when using deprecated values improperly', () => {
-        envTest({path: envMissingOne, sample: envMissingOneExample}).should.deep.equal(envMissingOneJson)
+        envTest({ path: envMissingOne, sample: envMissingOneExample }).should.deep.equal(envMissingOneJson)
       })
     })
 
     describe('Silent mode', () => {
       it('Should display warning by default', () => {
-        envTest({path: false})
+        envTest({ path: false })
         consoleSpy.calledOnce.should.equal(true)
       })
 
       it('Should not display warning when silent mode enabled', () => {
-        envTest({path: false, silent: true})
+        envTest({ path: false, silent: true })
         consoleSpy.called.should.equal(false)
       })
     })
