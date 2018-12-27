@@ -31,7 +31,8 @@ class Dotenv {
     safe,
     systemvars,
     silent,
-    sample
+    sample,
+    expand = false
   } = {}) {
     // Catch older packages, but hold their hand (just for a bit)
     if (sample) {
@@ -72,12 +73,16 @@ class Dotenv {
       const v = vars[key]
       const vKey = `process.env.${key}`
       let vValue
-      if (v.substring(0, 2) === '\\$') {
-        vValue = v.substring(1)
-      } else if (v.indexOf('\\$') > 0) {
-        vValue = v.replace(/\\\$/g, '$')
+      if (expand) {
+        if (v.substring(0, 2) === '\\$') {
+          vValue = v.substring(1)
+        } else if (v.indexOf('\\$') > 0) {
+          vValue = v.replace(/\\\$/g, '$')
+        } else {
+          vValue = interpolate(v, vars)
+        }
       } else {
-        vValue = interpolate(v, vars)
+        vValue = v
       }
 
       obj[vKey] = JSON.stringify(vValue)

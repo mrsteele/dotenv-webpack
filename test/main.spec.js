@@ -28,6 +28,53 @@ const envDefJson = buildExpectation({ TEST: 'hi' })
 const envEmptyJson = buildExpectation({})
 const envSimpleJson = buildExpectation({ TEST: 'testing' })
 const envMissingOneJson = buildExpectation({ TEST: '', TEST2: 'Hello' })
+
+/*
+NODE_ENV=test
+BASIC=basic
+BASIC_EXPAND=$BASIC
+MACHINE=machine_env
+MACHINE_EXPAND=$MACHINE
+UNDEFINED_EXPAND=$UNDEFINED_ENV_KEY
+ESCAPED_EXPAND=\$ESCAPED
+MONGOLAB_DATABASE=heroku_db
+MONGOLAB_USER=username
+MONGOLAB_PASSWORD=password
+MONGOLAB_DOMAIN=abcd1234.mongolab.com
+MONGOLAB_PORT=12345
+MONGOLAB_URI=mongodb://${MONGOLAB_USER}:${MONGOLAB_PASSWORD}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}
+
+MONGOLAB_USER_RECURSIVELY=${MONGOLAB_USER}:${MONGOLAB_PASSWORD}
+MONGOLAB_URI_RECURSIVELY=mongodb://${MONGOLAB_USER_RECURSIVELY}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}
+
+WITHOUT_CURLY_BRACES_URI=mongodb://$MONGOLAB_USER:$MONGOLAB_PASSWORD@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE
+WITHOUT_CURLY_BRACES_USER_RECURSIVELY=$MONGOLAB_USER:$MONGOLAB_PASSWORD
+WITHOUT_CURLY_BRACES_URI_RECURSIVELY=mongodb://$MONGOLAB_USER_RECURSIVELY@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE
+*/
+const envExpandedNotJson = buildExpectation({
+  NODE_ENV: 'test',
+  BASIC: 'basic',
+  BASIC_EXPAND: '$BASIC',
+  MACHINE: 'machine_env',
+  MACHINE_EXPAND: '$MACHINE',
+  UNDEFINED_EXPAND: '$UNDEFINED_ENV_KEY',
+  // eslint-disable-next-line
+  ESCAPED_EXPAND: '\\$ESCAPED',
+  MONGOLAB_DATABASE: 'heroku_db',
+  MONGOLAB_USER: 'username',
+  MONGOLAB_PASSWORD: 'password',
+  MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
+  MONGOLAB_PORT: '12345',
+  // eslint-disable-next-line
+  MONGOLAB_URI: 'mongodb://${MONGOLAB_USER}:${MONGOLAB_PASSWORD}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
+  // eslint-disable-next-line
+  MONGOLAB_USER_RECURSIVELY: '${MONGOLAB_USER}:${MONGOLAB_PASSWORD}',
+  // eslint-disable-next-line
+  MONGOLAB_URI_RECURSIVELY: 'mongodb://${MONGOLAB_USER_RECURSIVELY}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
+  WITHOUT_CURLY_BRACES_URI: 'mongodb://$MONGOLAB_USER:$MONGOLAB_PASSWORD@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE',
+  WITHOUT_CURLY_BRACES_USER_RECURSIVELY: '$MONGOLAB_USER:$MONGOLAB_PASSWORD',
+  WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://$MONGOLAB_USER_RECURSIVELY@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE'
+})
 const envExpandedJson = buildExpectation({
   NODE_ENV: 'test',
   BASIC: 'basic',
@@ -77,8 +124,12 @@ function runTests (Obj, name) {
         envTest().should.deep.equal(envDefJson)
       })
 
-      it('Should expand variables', () => {
-        envTest({ path: envExpanded }).should.deep.equal(envExpandedJson)
+      it('Should not expand variables by default', () => {
+        envTest({ path: envExpanded }).should.deep.equal(envExpandedNotJson)
+      })
+
+      it('Should expand variables when configured', () => {
+        envTest({ path: envExpanded, expand: true }).should.deep.equal(envExpandedJson)
       })
     })
 
