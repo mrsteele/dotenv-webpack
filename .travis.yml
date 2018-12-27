@@ -1,4 +1,3 @@
-sudo: false
 language: node_js
 cache:
   directories:
@@ -6,23 +5,21 @@ cache:
 notifications:
   email: false
 node_js:
-  - 'node'
-  - 'lts/*'
+  - '9'
   - '8'
   - '7'
+  - '6'
 before_install:
-  - npm i -g npm@^2.0.0
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
 install:
-  - npm i -g codecov codeclimate-test-reporter semantic-release
-  - npm i
-before_script:
-  - npm prune
+  - npm install
 script:
   - npm run travis
-  - codecov
-  - codeclimate-test-reporter < coverage/lcov.info
-after_success:
-  - semantic-release
+after_script:
+  - npx codecov
+  - ./cc-test-reporter after-build -r $CODECLIMATE_REPO_TOKEN --exit-code $TRAVIS_TEST_RESULT
+  - npx semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
