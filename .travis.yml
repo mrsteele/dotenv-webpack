@@ -14,14 +14,12 @@ before_install:
   - chmod +x ./cc-test-reporter
 install:
   - npm install
-  - npm install -g codecov
 script:
   - npm run travis
 after_script:
-  - codecov
+  - npx codecov
   - ./cc-test-reporter after-build -r $CODECLIMATE_REPO_TOKEN --exit-code $TRAVIS_TEST_RESULT
-  - npm i -g semantic-release
-  - semantic-release
+  - npx semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
