@@ -24,10 +24,10 @@ const buildExpectation = (obj) => Object.keys(obj).reduce((all, key) => {
   return all
 }, {})
 
-const envDefJson = buildExpectation({TEST: 'hi'})
+const envDefJson = buildExpectation({ TEST: 'hi' })
 const envEmptyJson = buildExpectation({})
-const envSimpleJson = buildExpectation({TEST: 'testing'})
-const envMissingOneJson = buildExpectation({TEST: '', TEST2: 'Hello'})
+const envSimpleJson = buildExpectation({ TEST: 'testing' })
+const envMissingOneJson = buildExpectation({ TEST: '', TEST2: 'Hello' })
 const envExpandedJson = buildExpectation({
   NODE_ENV: 'test',
   BASIC: 'basic',
@@ -77,7 +77,7 @@ function runTests (Obj, name) {
       })
 
       it('Should expand variables', () => {
-        envTest({path: envExpanded}).should.deep.equal(envExpandedJson)
+        envTest({ path: envExpanded }).should.deep.equal(envExpandedJson)
       })
     })
 
