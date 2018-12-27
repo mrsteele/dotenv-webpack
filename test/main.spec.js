@@ -35,6 +35,7 @@ const envExpandedJson = buildExpectation({
   MACHINE: 'machine_env',
   MACHINE_EXPAND: 'machine_env',
   UNDEFINED_EXPAND: '',
+  // eslint-disable-next-line
   ESCAPED_EXPAND: '\$ESCAPED',
   MONGOLAB_DATABASE: 'heroku_db',
   MONGOLAB_USER: 'username',
