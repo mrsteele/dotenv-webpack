@@ -80,7 +80,7 @@ Note: the `.env` values for `DB_PASS` and  `S3_API` are **NOT** present in our b
 
 ### How Secure?
 
-By allowing you to define exactly where you are loading environment variables from, and bundling only variables in your project that are explicitly referenced in your code, you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
+By allowing you to define exactly where you are loading environment variables from and bundling only variables in your project that are explicitly referenced in your code, you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
 
 ###### Recommended
 
@@ -93,7 +93,7 @@ Use the following properties to configure your instance.
 * **path** (`'./.env'`) - The path to your environment variables.
 * **safe** (`false`) - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
-* **silent** (`false`) - If true, all warnings will be surpressed.
+* **silent** (`false`) - If true, all warnings will be suppressed.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
 
 The following example shows how to set any/all arguments.
