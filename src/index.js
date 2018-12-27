@@ -69,7 +69,19 @@ class Dotenv {
     })
 
     const formatData = Object.keys(vars).reduce((obj, key) => {
-      obj[`process.env.${key}`] = JSON.stringify(interpolate(vars[key], vars))
+      const v = vars[key]
+      const vKey = `process.env.${key}`
+      let vValue
+      if (v.substring(0, 2) === '\\$') {
+        vValue = v.substring(1)
+      } else if (v.indexOf('\\$') > 0) {
+        vValue = v.replace(/\\\$/g, '$')
+      } else {
+        vValue = interpolate(v, vars)
+      }
+
+      obj[vKey] = JSON.stringify(vValue)
+
       return obj
     }, {})
 
