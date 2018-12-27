@@ -7,16 +7,13 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <a href="https://travis-ci.org/mrsteele/dotenv-webpack" target="_blank">
     <img alt="Travis" src="https://travis-ci.org/mrsteele/dotenv-webpack.svg?branch=master" />
   </a>
-  <a href="https://codecov.io/gh/mrsteele/dotenv-webpack" target="_blank">
-    <img alt="codecov" src="https://codecov.io/gh/mrsteele/dotenv-webpack/branch/master/graph/badge.svg" />
-  </a>
   <a href="https://david-dm.org/mrsteele/dotenv-webpack" target="_blank">
     <img alt="Dependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack.svg" />
   </a>
   <a href="https://david-dm.org/mrsteele/dotenv-webpack?type=dev" target="_blank">
     <img alt="devDependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg" />
   </a>
-  
+
   <h1>
     <img width="30" heigth="30" src="https://raw.githubusercontent.com/motdotla/dotenv/master/dotenv.png" alt="dotenv" />
     <img width="30" heigth="30" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack">
@@ -97,6 +94,7 @@ Use the following properties to configure your instance.
 * **safe** (`false`) - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
 * **silent** (`false`) - If true, all warnings will be surpressed.
+* **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
 
 The following example shows how to set any/all arguments.
 
