@@ -42,8 +42,7 @@
     "webpack": "^1 || ^2 || ^3 || ^4"
   },
   "dependencies": {
-    "dotenv": "^5.0.1",
-    "dotenv-expand": "^4.0.1"
+    "dotenv": "^5.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
