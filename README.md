@@ -95,6 +95,7 @@ Use the following properties to configure your instance.
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
 * **silent** (`false`) - If true, all warnings will be suppressed.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
+* **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at https://www.npmjs.com/package/dotenv-defaults.
 
 The following example shows how to set any/all arguments.
 

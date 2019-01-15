@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv-defaults'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
@@ -32,6 +32,7 @@ class Dotenv {
     systemvars,
     silent,
     sample,
+    defaults = false,
     expand = false
   } = {}) {
     // Catch older packages, but hold their hand (just for a bit)
@@ -49,7 +50,11 @@ class Dotenv {
       })
     }
 
-    const env = this.loadFile(path, silent)
+    const env = this.loadFile({
+      file: path,
+      defaults,
+      silent
+    })
 
     let blueprint = env
     if (safe) {
@@ -57,7 +62,7 @@ class Dotenv {
       if (safe !== true) {
         file = safe
       }
-      blueprint = this.loadFile(file, silent)
+      blueprint = this.loadFile({ file, defaults, silent })
     }
 
     Object.keys(blueprint).map(key => {
@@ -99,9 +104,18 @@ class Dotenv {
    * @param {Boolean} silent - If true, suppress warnings, if false, display warnings.
    * @returns {Object}
    */
-  loadFile (file, silent) {
+  loadFile ({ file, defaults, silent }) {
     try {
-      return dotenv.parse(fs.readFileSync(file))
+      let def = ''
+      if (defaults) {
+        defaults = defaults === true ? './.env.defaults' : defaults
+        try {
+          def = fs.readFileSync(defaults)
+        } catch (err) {
+          this.warn(`Failed to load defaults: ${defaults}.`, silent)
+        }
+      }
+      return dotenv.parse(fs.readFileSync(file), def)
     } catch (err) {
       this.warn(`Failed to load ${file}.`, silent)
       return {}
