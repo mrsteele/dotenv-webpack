@@ -26,23 +26,29 @@ class Dotenv {
    * @param {Boolean} [options.silent=false] - If true, suppress warnings, if false, display warnings.
    * @returns {webpack.DefinePlugin}
    */
-  constructor ({
-    path = './.env',
-    safe,
-    systemvars,
-    silent,
-    sample,
-    defaults = false,
-    expand = false
-  } = {}) {
+  constructor (config = {}) {
+    this.config = Object.assign({}, {
+      path: './.env'
+    }, config)
+
+    this.checkDeprecation()
+
+    return new DefinePlugin(this.formatData(this.gatherVariables()))
+  }
+
+  checkDeprecation () {
+    const { sample, safe, silent } = this.config
     // Catch older packages, but hold their hand (just for a bit)
     if (sample) {
       if (safe) {
-        safe = sample
+        this.config.safe = sample
       }
       this.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.', silent)
     }
+  }
 
+  gatherVariables () {
+    const { systemvars, path, defaults, silent, safe } = this.config
     let vars = {}
     if (systemvars) {
       Object.keys(process.env).map(key => {
@@ -82,7 +88,12 @@ class Dotenv {
       Object.assign(vars, env)
     }
 
-    const formatData = Object.keys(vars).reduce((obj, key) => {
+    return vars
+  }
+
+  formatData (vars = {}) {
+    const { expand } = this.config
+    return Object.keys(vars).reduce((obj, key) => {
       const v = vars[key]
       const vKey = `process.env.${key}`
       let vValue
@@ -102,8 +113,6 @@ class Dotenv {
 
       return obj
     }, {})
-
-    return new DefinePlugin(formatData)
   }
 
   /**
