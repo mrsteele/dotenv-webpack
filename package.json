@@ -55,9 +55,6 @@
   "files": [
     "src"
   ],
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "browser": "browser.js",
   "nyc": {
     "include": [
