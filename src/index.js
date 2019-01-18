@@ -48,14 +48,34 @@ class Dotenv {
   }
 
   gatherVariables () {
-    const { systemvars, path, defaults, silent, safe } = this.config
-    let vars = {}
-    if (systemvars) {
-      Object.keys(process.env).map(key => {
-        vars[key] = process.env[key]
-      })
+    const { safe } = this.config
+    let vars = this.initializeVars()
+
+    const { env, blueprint } = this.getEnvs()
+
+    Object.keys(blueprint).map(key => {
+      const value = vars.hasOwnProperty(key) ? vars[key] : env[key]
+      if (!value && safe) {
+        throw new Error(`Missing environment variable: ${key}`)
+      } else {
+        vars[key] = value
+      }
+    })
+
+    // add the leftovers
+    if (safe) {
+      Object.assign(vars, env)
     }
 
+    return vars
+  }
+
+  initializeVars () {
+    return (this.config.systemvars) ? Object.assign({}, process.env) : {}
+  }
+
+  getEnvs () {
+    const { path, defaults, silent, safe } = this.config
     const env = this.loadFile({
       file: path,
       defaults,
@@ -74,21 +94,10 @@ class Dotenv {
       })
     }
 
-    Object.keys(blueprint).map(key => {
-      const value = vars.hasOwnProperty(key) ? vars[key] : env[key]
-      if (!value && safe) {
-        throw new Error(`Missing environment variable: ${key}`)
-      } else {
-        vars[key] = value
-      }
-    })
-
-    // add the leftovers
-    if (safe) {
-      Object.assign(vars, env)
+    return {
+      env,
+      blueprint
     }
-
-    return vars
   }
 
   formatData (vars = {}) {
