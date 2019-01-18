@@ -18,6 +18,7 @@ const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example
 const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
 const envExpanded = path.resolve(__dirname, './envs/.expanded')
+const envDefaults = path.resolve(__dirname, './envs/.defaults')
 
 const buildExpectation = (obj) => Object.keys(obj).reduce((all, key) => {
   all[`process.env.${key}`] = JSON.stringify(obj[key])
@@ -28,6 +29,8 @@ const envDefJson = buildExpectation({ TEST: 'hi' })
 const envEmptyJson = buildExpectation({})
 const envSimpleJson = buildExpectation({ TEST: 'testing' })
 const envMissingOneJson = buildExpectation({ TEST: '', TEST2: 'Hello' })
+const envDefaultsJson = buildExpectation({ TEST: 'hi', TEST2: 'hidefault' })
+const envDefaultsJson2 = buildExpectation({ TEST: 'hi', TEST2: 'youcanseethis' })
 
 /*
 NODE_ENV=test
@@ -167,6 +170,21 @@ function runTests (Obj, name) {
         }
 
         errorTest.should.throw('Missing environment variable')
+      })
+    })
+
+    describe('Defaults configuration', () => {
+      it('should support default configurations', () => {
+        envTest({ defaults: true }).should.deep.equal(envDefaultsJson)
+      })
+
+      it('should support string configurations', () => {
+        envTest({ defaults: envDefaults }).should.deep.equal(envDefaultsJson2)
+      })
+
+      it('Should display warning when default cannot be loaded', () => {
+        envTest({ defaults: '.does.not.exist' }).should.deep.equal(envDefJson)
+        consoleSpy.calledOnce.should.equal(true)
       })
     })
 
