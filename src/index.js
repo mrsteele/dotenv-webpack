@@ -75,19 +75,12 @@ class Dotenv {
   }
 
   getEnvs () {
-    const { path, defaults, silent, safe } = this.config
-    let def = ''
-    if (defaults) {
-      def = this.loadFile({
-        file: defaults === true ? './.env.defaults' : defaults,
-        silent
-      })
-    }
+    const { path, silent, safe } = this.config
 
     const env = dotenv.parse(this.loadFile({
       file: path,
       silent
-    }), def)
+    }), this.getDefaults())
 
     let blueprint = env
     if (safe) {
@@ -105,6 +98,19 @@ class Dotenv {
       env,
       blueprint
     }
+  }
+
+  getDefaults () {
+    const { silent, defaults } = this.config
+
+    if (defaults) {
+      return this.loadFile({
+        file: defaults === true ? './.env.defaults' : defaults,
+        silent
+      })
+    }
+
+    return ''
   }
 
   formatData (vars = {}) {
@@ -134,7 +140,6 @@ class Dotenv {
   /**
    * Load a file.
    * @param {String} config.file - The file to load.
-   * @param {String} config.def - The defaults.
    * @param {Boolean} config.silent - If true, suppress warnings, if false, display warnings.
    * @returns {Object}
    */
