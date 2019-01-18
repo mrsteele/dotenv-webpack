@@ -76,11 +76,18 @@ class Dotenv {
 
   getEnvs () {
     const { path, defaults, silent, safe } = this.config
-    const env = this.loadFile({
+    let def = ''
+    if (defaults) {
+      def = this.loadFile({
+        file: defaults === true ? './.env.defaults' : defaults,
+        silent
+      })
+    }
+
+    const env = dotenv.parse(this.loadFile({
       file: path,
-      defaults,
       silent
-    })
+    }), def)
 
     let blueprint = env
     if (safe) {
@@ -88,10 +95,10 @@ class Dotenv {
       if (safe !== true) {
         file = safe
       }
-      blueprint = this.loadFile({
+      blueprint = dotenv.parse(this.loadFile({
         file,
         silent
-      })
+      }))
     }
 
     return {
@@ -125,23 +132,15 @@ class Dotenv {
   }
 
   /**
-   * Load and parses a file.
-   * @param {String} file - The file to load.
-   * @param {Boolean} silent - If true, suppress warnings, if false, display warnings.
+   * Load a file.
+   * @param {String} config.file - The file to load.
+   * @param {String} config.def - The defaults.
+   * @param {Boolean} config.silent - If true, suppress warnings, if false, display warnings.
    * @returns {Object}
    */
-  loadFile ({ file, defaults, silent }) {
+  loadFile ({ file, silent }) {
     try {
-      let def = ''
-      if (defaults) {
-        defaults = defaults === true ? './.env.defaults' : defaults
-        try {
-          def = fs.readFileSync(defaults)
-        } catch (err) {
-          this.warn(`Failed to load defaults: ${defaults}.`, silent)
-        }
-      }
-      return dotenv.parse(fs.readFileSync(file), def)
+      return fs.readFileSync(file, 'utf8')
     } catch (err) {
       this.warn(`Failed to load ${file}.`, silent)
       return {}
