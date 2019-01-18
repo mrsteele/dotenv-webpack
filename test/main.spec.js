@@ -181,6 +181,11 @@ function runTests (Obj, name) {
       it('should support string configurations', () => {
         envTest({ defaults: envDefaults }).should.deep.equal(envDefaultsJson2)
       })
+
+      it('Should display warning when default cannot be loaded', () => {
+        envTest({ defaults: '.does.not.exist' }).should.deep.equal(envDefJson)
+        consoleSpy.calledOnce.should.equal(true)
+      })
     })
 
     describe('System variables', () => {
