@@ -1,12 +1,12 @@
 /* global describe, it, beforeEach */
 
 // Tests suite
-import path from 'path'
-import chai from 'chai'
-import sinon from 'sinon'
+const path = require('path')
+const chai = require('chai')
+const sinon = require('sinon')
 
 // The star of the show
-import Src from '../src'
+const Src = require('../src')
 
 chai.should()
 const envEmpty = path.resolve(__dirname, './envs/.empty')
@@ -102,8 +102,8 @@ const envExpandedJson = buildExpectation({
 
 const consoleSpy = sinon.spy(console, 'warn')
 
-function runTests (Obj, name) {
-  function envTest (config) {
+const runTests = (Obj, name) => {
+  const envTest = (config) => {
     return new Obj(config).definitions
   }
 
