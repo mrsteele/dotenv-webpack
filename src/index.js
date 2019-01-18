@@ -62,7 +62,10 @@ class Dotenv {
       if (safe !== true) {
         file = safe
       }
-      blueprint = this.loadFile({ file, defaults, silent })
+      blueprint = this.loadFile({
+        file,
+        silent
+      })
     }
 
     Object.keys(blueprint).map(key => {
@@ -73,6 +76,11 @@ class Dotenv {
         vars[key] = value
       }
     })
+
+    // add the leftovers
+    if (safe) {
+      Object.assign(vars, env)
+    }
 
     const formatData = Object.keys(vars).reduce((obj, key) => {
       const v = vars[key]
