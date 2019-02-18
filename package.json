@@ -54,7 +54,7 @@
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
     "husky": "^1.1.2",
-    "mocha": "^5.0.1",
+    "mocha": "^6.0.0",
     "nyc": "^13.1.0",
     "rimraf": "^2.6.2",
     "sinon": "^7.0.0",
