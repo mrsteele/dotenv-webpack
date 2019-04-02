@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv-defaults'
 import fs from 'fs'
 import { DefinePlugin } from 'webpack'
 
@@ -26,39 +26,32 @@ class Dotenv {
    * @param {Boolean} [options.silent=false] - If true, suppress warnings, if false, display warnings.
    * @returns {webpack.DefinePlugin}
    */
-  constructor ({
-    path = './.env',
-    safe,
-    systemvars,
-    silent,
-    sample,
-    expand = false
-  } = {}) {
+  constructor (config = {}) {
+    this.config = Object.assign({}, {
+      path: './.env'
+    }, config)
+
+    this.checkDeprecation()
+
+    return new DefinePlugin(this.formatData(this.gatherVariables()))
+  }
+
+  checkDeprecation () {
+    const { sample, safe, silent } = this.config
     // Catch older packages, but hold their hand (just for a bit)
     if (sample) {
       if (safe) {
-        safe = sample
+        this.config.safe = sample
       }
       this.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.', silent)
     }
+  }
 
-    let vars = {}
-    if (systemvars) {
-      Object.keys(process.env).map(key => {
-        vars[key] = process.env[key]
-      })
-    }
+  gatherVariables () {
+    const { safe } = this.config
+    let vars = this.initializeVars()
 
-    const env = this.loadFile(path, silent)
-
-    let blueprint = env
-    if (safe) {
-      let file = './.env.example'
-      if (safe !== true) {
-        file = safe
-      }
-      blueprint = this.loadFile(file, silent)
-    }
+    const { env, blueprint } = this.getEnvs()
 
     Object.keys(blueprint).map(key => {
       const value = vars.hasOwnProperty(key) ? vars[key] : env[key]
@@ -69,7 +62,60 @@ class Dotenv {
       }
     })
 
-    const formatData = Object.keys(vars).reduce((obj, key) => {
+    // add the leftovers
+    if (safe) {
+      Object.assign(vars, env)
+    }
+
+    return vars
+  }
+
+  initializeVars () {
+    return (this.config.systemvars) ? Object.assign({}, process.env) : {}
+  }
+
+  getEnvs () {
+    const { path, silent, safe } = this.config
+
+    const env = dotenv.parse(this.loadFile({
+      file: path,
+      silent
+    }), this.getDefaults())
+
+    let blueprint = env
+    if (safe) {
+      let file = './.env.example'
+      if (safe !== true) {
+        file = safe
+      }
+      blueprint = dotenv.parse(this.loadFile({
+        file,
+        silent
+      }))
+    }
+
+    return {
+      env,
+      blueprint
+    }
+  }
+
+  getDefaults () {
+    const { silent, defaults } = this.config
+
+    if (defaults) {
+      return this.loadFile({
+        file: defaults === true ? './.env.defaults' : defaults,
+        silent
+      })
+    }
+
+    return ''
+  }
+
+  formatData (vars = {}) {
+    const { expand } = this.config
+    return Object.keys(vars).reduce((obj, key) => {
       const v = vars[key]
       const vKey = `process.env.${key}`
       let vValue
@@ -89,19 +135,17 @@ class Dotenv {
 
       return obj
     }, {})
-
-    return new DefinePlugin(formatData)
   }
 
   /**
-   * Load and parses a file.
-   * @param {String} file - The file to load.
-   * @param {Boolean} silent - If true, suppress warnings, if false, display warnings.
+   * Load a file.
+   * @param {String} config.file - The file to load.
+   * @param {Boolean} config.silent - If true, suppress warnings, if false, display warnings.
    * @returns {Object}
    */
-  loadFile (file, silent) {
+  loadFile ({ file, silent }) {
     try {
-      return dotenv.parse(fs.readFileSync(file))
+      return fs.readFileSync(file, 'utf8')
     } catch (err) {
       this.warn(`Failed to load ${file}.`, silent)
       return {}
