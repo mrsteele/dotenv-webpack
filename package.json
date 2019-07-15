@@ -10,7 +10,7 @@
     "predoc": "rimraf docs",
     "doc": "esdoc -c config/doc.json",
     "pretest": "npm run build",
-    "test": "nyc _mocha --compilers js:babel-register",
+    "test": "nyc _mocha --require babel-core/register",
     "posttest": "nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
