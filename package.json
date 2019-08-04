@@ -10,7 +10,7 @@
     "predoc": "rimraf docs",
     "doc": "esdoc -c config/doc.json",
     "pretest": "npm run build",
-    "test": "nyc _mocha --require babel-core/register",
+    "test": "nyc _mocha --require @babel/register",
     "posttest": "nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
@@ -45,11 +45,12 @@
     "dotenv-defaults": "^1.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-eslint": "^10.0.1",
-    "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.26.0",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-object-assign": "^7.2.0",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/register": "^7.5.5",
+    "babel-eslint": "^10.0.2",
     "chai": "^4.1.2",
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
@@ -70,10 +71,10 @@
   "browser": "browser.js",
   "babel": {
     "presets": [
-      "env"
+      "@babel/preset-env"
     ],
     "plugins": [
-      "transform-object-assign"
+      "@babel/plugin-transform-object-assign"
     ]
   },
   "nyc": {
