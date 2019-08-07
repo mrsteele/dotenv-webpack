@@ -206,6 +206,14 @@ function runTests (Obj, name) {
       it('should not allow local variables to override systemvars', () => {
         envTest({ path: envSystemvars, systemvars: true })['process.env.PATH'].should.not.equal('""')
       })
+
+      it('Should give the highest priority for the system variables', () => {
+        process.env.TEST = 'production'
+        const test = envTest({ safe: true, systemvars: true, defaults: true })
+        test['process.env.TEST'].should.equal('"production"')
+        test['process.env.TEST2'].should.equal('"hidefault"')
+        delete process.env.TEST
+      })
     })
 
     describe('Missing a variable', () => {
