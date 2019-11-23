@@ -52,22 +52,24 @@ class Dotenv {
     const vars = this.initializeVars()
 
     const { env, blueprint } = this.getEnvs()
+    
+    const exposed = safe ? {} : vars
 
     Object.keys(blueprint).map(key => {
       const value = Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : env[key]
       if (!value && safe) {
         throw new Error(`Missing environment variable: ${key}`)
       } else {
-        vars[key] = value
+        exposed[key] = value
       }
     })
 
     // add the leftovers
     if (safe) {
-      Object.assign(vars, env)
+      Object.assign(exposed, env)
     }
 
-    return vars
+    return exposed
   }
 
   initializeVars () {
