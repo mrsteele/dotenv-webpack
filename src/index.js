@@ -52,7 +52,7 @@ class Dotenv {
     const vars = this.initializeVars()
 
     const { env, blueprint } = this.getEnvs()
-    
+
     const exposed = safe ? {} : vars
 
     Object.keys(blueprint).map(key => {
