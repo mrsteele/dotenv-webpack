@@ -7,16 +7,13 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <a href="https://travis-ci.org/mrsteele/dotenv-webpack" target="_blank">
     <img alt="Travis" src="https://travis-ci.org/mrsteele/dotenv-webpack.svg?branch=master" />
   </a>
-  <a href="https://codecov.io/gh/mrsteele/dotenv-webpack" target="_blank">
-    <img alt="codecov" src="https://codecov.io/gh/mrsteele/dotenv-webpack/branch/master/graph/badge.svg" />
-  </a>
   <a href="https://david-dm.org/mrsteele/dotenv-webpack" target="_blank">
     <img alt="Dependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack.svg" />
   </a>
   <a href="https://david-dm.org/mrsteele/dotenv-webpack?type=dev" target="_blank">
     <img alt="devDependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg" />
   </a>
-  
+
   <h1>
     <img width="30" heigth="30" src="https://raw.githubusercontent.com/motdotla/dotenv/master/dotenv.png" alt="dotenv" />
     <img width="30" heigth="30" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack">
@@ -28,7 +25,7 @@ A secure webpack plugin that supports dotenv and other environment variables and
 
 Include the package locally in your repository.
 
-`npm install dotenv-webpack --save`
+`npm install dotenv-webpack --save-dev`
 
 ### Description
 
@@ -83,7 +80,7 @@ Note: the `.env` values for `DB_PASS` and  `S3_API` are **NOT** present in our b
 
 ### How Secure?
 
-By allowing you to define exactly where you are loading environment variables from, and bundling only variables in your project that are explicitly referenced in your code, you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
+By allowing you to define exactly where you are loading environment variables from and bundling only variables in your project that are explicitly referenced in your code, you can be sure that only what you need is included and you do not accidentally leak anything sensitive.
 
 ###### Recommended
 
@@ -94,10 +91,11 @@ Add `.env` to your `.gitignore` file
 Use the following properties to configure your instance.
 
 * **path** (`'./.env'`) - The path to your environment variables.
-* **safe** (`false`) - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
-* **allowEmptyValues** (`false`) - Whether to allow empty strings in safe mode. If false, will throw an error if any env variables are empty (but only if safe mode is enabled).
+* **safe** (`false`) - If true, load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
-* **silent** (`false`) - If true, all warnings will be surpressed.
+* **silent** (`false`) - If true, all warnings will be suppressed.
+* **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
+* **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at https://www.npmjs.com/package/dotenv-defaults.
 
 The following example shows how to set any/all arguments.
 
@@ -110,7 +108,8 @@ module.exports = {
       safe: true, // load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
       allowEmptyValues: true, // do not consider an empty string (`FOO=`) as a missing variable
       systemvars: true, // load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
-      silent: true // hide any errors
+      silent: true, // hide any errors
+      defaults: false // load '.env.defaults' as the default values if empty.
     })
   ]
   ...
