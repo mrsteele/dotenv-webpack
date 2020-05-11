@@ -92,6 +92,7 @@ Use the following properties to configure your instance.
 
 * **path** (`'./.env'`) - The path to your environment variables.
 * **safe** (`false`) - If true, load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
+* **allowEmptyValues** (`false`) - Whether to allow empty strings in safe mode. If false, will throw an error if any env variables are empty (but only if safe mode is enabled).
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
 * **silent** (`false`) - If true, all warnings will be suppressed.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
@@ -106,6 +107,7 @@ module.exports = {
     new Dotenv({
       path: './some.other.env', // load this now instead of the ones in '.env'
       safe: true, // load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
+      allowEmptyValues: true, // allow empty variables (e.g. `FOO=`) (treat it as empty string, rather than missing)
       systemvars: true, // load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
       silent: true, // hide any errors
       defaults: false // load '.env.defaults' as the default values if empty.
