@@ -5,9 +5,9 @@ cache:
 notifications:
   email: false
 node_js:
-  - '9'
+  - '12'
+  - '10'
   - '8'
-  - '7'
   - '6'
 before_install:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
