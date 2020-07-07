@@ -10,7 +10,7 @@
     "predoc": "rimraf docs",
     "doc": "esdoc -c config/doc.json",
     "pretest": "npm run build",
-    "test": "nyc _mocha --require babel-core/register",
+    "test": "nyc mocha --require babel-core/register",
     "posttest": "nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
@@ -42,7 +42,7 @@
     "webpack": "^1 || ^2 || ^3 || ^4"
   },
   "dependencies": {
-    "dotenv-defaults": "^1.0.2"
+    "dotenv-defaults": "^2.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -53,11 +53,11 @@
     "chai": "^4.1.2",
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
-    "husky": "^3.0.0",
-    "mocha": "^6.0.0",
-    "nyc": "^14.0.0",
+    "husky": "^4.2.5",
+    "mocha": "^6.2.3",
+    "nyc": "^15.1.0",
     "rimraf": "^3.0.0",
-    "sinon": "^7.0.0",
+    "sinon": "^9.0.2",
     "standard": "^14.0.0",
     "webpack": "^4.6.0"
   },
