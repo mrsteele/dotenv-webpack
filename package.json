@@ -63,9 +63,6 @@
   "files": [
     "dist"
   ],
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "browser": "browser.js",
   "babel": {
     "presets": [
