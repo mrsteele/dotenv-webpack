@@ -10,7 +10,7 @@
     "predoc": "rimraf docs",
     "doc": "esdoc -c config/doc.json",
     "pretest": "npm run build",
-    "test": "nyc _mocha --require babel-core/register",
+    "test": "nyc mocha --require @babel/register",
     "posttest": "nyc report --reporter=lcov",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",
@@ -42,38 +42,31 @@
     "webpack": "^1 || ^2 || ^3 || ^4"
   },
   "dependencies": {
-    "dotenv-defaults": "^1.0.2"
+    "dotenv-defaults": "^2.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-eslint": "^10.0.1",
-    "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.26.0",
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.4",
     "chai": "^4.1.2",
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
-    "husky": "^3.0.0",
-    "mocha": "^6.0.0",
-    "nyc": "^14.0.0",
+    "husky": "^4.2.5",
+    "mocha": "^6.2.3",
+    "nyc": "^15.1.0",
     "rimraf": "^3.0.0",
-    "sinon": "^7.0.0",
+    "sinon": "^9.0.2",
     "standard": "^14.0.0",
     "webpack": "^4.6.0"
   },
   "files": [
     "dist"
   ],
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "browser": "browser.js",
   "babel": {
     "presets": [
-      "env"
-    ],
-    "plugins": [
-      "transform-object-assign"
+      "@babel/preset-env"
     ]
   },
   "nyc": {
