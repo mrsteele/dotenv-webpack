@@ -13,6 +13,8 @@ const envEmpty = path.resolve(__dirname, './envs/.empty')
 const envEmptyExample = path.resolve(__dirname, './envs/.empty.example')
 const envSimple = path.resolve(__dirname, './envs/.simple')
 const envSimpleExample = path.resolve(__dirname, './envs/.simple.example')
+const envOneEmpty = path.resolve(__dirname, './envs/.oneempty')
+const envOneEmptyExample = path.resolve(__dirname, './envs/.oneempty.example')
 const envMissingOne = path.resolve(__dirname, './envs/.missingone')
 const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
 const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
@@ -28,7 +30,8 @@ const buildExpectation = (obj) => Object.keys(obj).reduce((all, key) => {
 const envDefJson = buildExpectation({ TEST: 'hi' })
 const envEmptyJson = buildExpectation({})
 const envSimpleJson = buildExpectation({ TEST: 'testing' })
-const envMissingOneJson = buildExpectation({ TEST: '', TEST2: 'Hello' })
+const envOneEmptyJson = buildExpectation({ TEST: '', TEST2: 'Hello' })
+const envMissingOneJson = buildExpectation({ TEST2: 'Hello' })
 const envDefaultsJson = buildExpectation({ TEST: 'hi', TEST2: 'hidefault' })
 const envDefaultsJson2 = buildExpectation({ TEST: 'hi', TEST2: 'youcanseethis' })
 
@@ -208,12 +211,30 @@ const runTests = (Obj, name) => {
       })
     })
 
+    describe('Empty variables', () => {
+      it('Should load fine (not-safe)', () => {
+        envTest({ path: envOneEmpty }).should.deep.equal(envOneEmptyJson)
+      })
+
+      it('Should fail on safe mode', () => {
+        function errorTest () {
+          envTest({ path: envOneEmpty, safe: envOneEmptyExample })
+        }
+
+        errorTest.should.throw('Missing environment variable')
+      })
+
+      it('Should succeed in safe mode if allowEmptyValues is true', () => {
+        envTest({ path: envOneEmpty, safe: envOneEmptyExample, allowEmptyValues: true }).should.deep.equal(envOneEmptyJson)
+      })
+    })
+
     describe('Missing a variable', () => {
       it('Should load fine (not-safe)', () => {
         envTest({ path: envMissingOne }).should.deep.equal(envMissingOneJson)
       })
 
-      it('Should fail on safe mode', () => {
+      it('Should fail on safe mode (if allowEmptyValues is false)', () => {
         function errorTest () {
           envTest({ path: envMissingOne, safe: envMissingOneExample })
         }

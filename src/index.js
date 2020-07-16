@@ -48,14 +48,18 @@ class Dotenv {
   }
 
   gatherVariables () {
-    const { safe } = this.config
-    let vars = this.initializeVars()
+    const { safe, allowEmptyValues } = this.config
+    const vars = this.initializeVars()
 
     const { env, blueprint } = this.getEnvs()
 
     Object.keys(blueprint).map(key => {
-      const value = vars.hasOwnProperty(key) ? vars[key] : env[key]
-      if (!value && safe) {
+      const value = Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : env[key]
+
+      const isMissing = typeof value === 'undefined' || value === null ||
+        (!allowEmptyValues && value === '')
+
+      if (safe && isMissing) {
         throw new Error(`Missing environment variable: ${key}`)
       } else {
         vars[key] = value
