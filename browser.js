@@ -1,3 +1,3 @@
-var plugin = require('./dist').default
+var plugin = require('./src')
 
 module.exports = plugin

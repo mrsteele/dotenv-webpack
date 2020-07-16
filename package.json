@@ -9,11 +9,8 @@
     "lint": "standard",
     "predoc": "rimraf docs",
     "doc": "esdoc -c config/doc.json",
-    "pretest": "npm run build",
-    "test": "nyc mocha --require @babel/register",
+    "test": "nyc mocha",
     "posttest": "nyc report --reporter=lcov",
-    "prebuild": "rimraf dist",
-    "build": "babel --copy-files --out-dir dist src",
     "travis": "npm run lint && npm t"
   },
   "repository": {
@@ -45,34 +42,23 @@
     "dotenv-defaults": "^2.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/register": "^7.10.4",
     "chai": "^4.1.2",
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
     "husky": "^4.2.5",
     "mocha": "^6.2.3",
     "nyc": "^15.1.0",
-    "rimraf": "^3.0.0",
     "sinon": "^9.0.2",
     "standard": "^14.0.0",
     "webpack": "^4.6.0"
   },
   "files": [
-    "dist"
+    "src"
   ],
   "browser": "browser.js",
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
   "nyc": {
     "include": [
-      "src/**/*.js",
-      "dist/**/*.js"
+      "src/**/*.js"
     ]
   }
 }
