@@ -9,7 +9,7 @@
     "lint": "standard",
     "predoc": "rimraf docs",
     "doc": "esdoc -c config/doc.json",
-    "doo": "npm run build",
+    "pretest": "npm run build",
     "test": "jest",
     "prebuild": "rimraf dist",
     "build": "babel --copy-files --out-dir dist src",

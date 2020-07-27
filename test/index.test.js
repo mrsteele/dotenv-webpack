@@ -5,6 +5,7 @@ const path = require('path')
 
 // The star of the show
 const Src = require('../src')
+const Dist = require('../dist')
 
 const envEmpty = path.resolve(__dirname, './envs/.empty')
 const envEmptyExample = path.resolve(__dirname, './envs/.empty.example')
@@ -291,4 +292,5 @@ function runTests (Obj, name) {
 
 describe('Tests', () => {
   runTests(Src.default, 'Source')
+  runTests(Dist.default, 'Dist')
 })
