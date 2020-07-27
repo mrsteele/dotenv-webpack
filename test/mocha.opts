@@ -1,4 +1,0 @@
---require chai
---reporter spec
---ui bdd
---recursive

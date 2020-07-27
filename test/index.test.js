@@ -1,14 +1,12 @@
-/* global describe, it, beforeEach */
+/* global jest, describe, test, expect, beforeEach */
 
 // Tests suite
-import path from 'path'
-import chai from 'chai'
-import sinon from 'sinon'
+const path = require('path')
 
 // The star of the show
-import Src from '../src'
+const Src = require('../src')
+const Dist = require('../dist')
 
-chai.should()
 const envEmpty = path.resolve(__dirname, './envs/.empty')
 const envEmptyExample = path.resolve(__dirname, './envs/.empty.example')
 const envSimple = path.resolve(__dirname, './envs/.simple')
@@ -103,7 +101,8 @@ const envExpandedJson = buildExpectation({
   WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db'
 })
 
-const consoleSpy = sinon.spy(console, 'warn')
+// const consoleSpy = jest.spyOn(console, 'warn')
+global.console.warn = jest.fn()
 
 function runTests (Obj, name) {
   function envTest (config) {
@@ -113,178 +112,185 @@ function runTests (Obj, name) {
   /** @test {Dotenv} **/
   describe(name, () => {
     beforeEach(() => {
-      consoleSpy.resetHistory()
+      global.console.warn.mockClear()
     })
 
     describe('Defaults', () => {
-      it('Should be a function.', () => {
-        Obj.should.be.a('function')
+      test('Should be an function.', () => {
+        expect(typeof Obj).toEqual('function')
       })
 
       // @todo - This one isn't a great test, but it wasn't really working for me.
-      it('Should return a instance of DefinePlugin.', () => {
-        envTest().should.be.an('object')
+      test('Should return a instance of DefinePlugin.', () => {
+        expect(typeof envTest()).toEqual('object')
       })
 
-      it('Should include environment variables that exist in .env file.', () => {
-        envTest().should.deep.equal(envDefJson)
+      test('Should include environment variables that exist in .env file.', () => {
+        expect(envTest()).toEqual(envDefJson)
       })
 
-      it('Should not expand variables by default', () => {
-        envTest({ path: envExpanded }).should.deep.equal(envExpandedNotJson)
+      test('Should not expand variables by default', () => {
+        expect(envTest({ path: envExpanded })).toEqual(envExpandedNotJson)
       })
 
-      it('Should expand variables when configured', () => {
-        envTest({ path: envExpanded, expand: true }).should.deep.equal(envExpandedJson)
+      test('Should expand variables when configured', () => {
+        expect(envTest({ path: envExpanded, expand: true })).toEqual(envExpandedJson)
       })
     })
 
     describe('Simple configuration', () => {
-      it('Should load enviornment variables when they exist in the .env file.', () => {
-        envTest({ path: envSimple }).should.deep.equal(envSimpleJson)
+      test('Should load enviornment variables when they exist in the .env file.', () => {
+        expect(envTest({ path: envSimple })).toEqual(envSimpleJson)
       })
 
-      it('Should be an empty object when no environment variables exist in .env file.', () => {
-        envTest({ path: false }).should.deep.equal(envEmptyJson)
+      test('Should be an empty object when no environment variables exist in .env file.', () => {
+        expect(envTest({ path: false })).toEqual(envEmptyJson)
       })
 
-      it('Should recognize safe-mode', () => {
-        envTest({ safe: true }).should.deep.equal(envDefJson)
+      test('Should recognize safe-mode', () => {
+        expect(envTest({ safe: true })).toEqual(envDefJson)
       })
 
-      it('Should fail when not passing safe-mode', () => {
-        function errorTest () {
+      test('Should fail when not passing safe-mode', () => {
+        try {
           envTest({ path: envEmpty, safe: true })
+          throw new Error('Should not get here')
+        } catch (err) {
+          expect(err.message).toEqual('Missing environment variable: TEST')
         }
-
-        errorTest.should.throw('Missing environment variable')
       })
     })
 
     describe('Safe configuration', () => {
-      it('Should load successfully if variables defined', () => {
-        envTest({ path: envEmpty, safe: envEmptyExample }).should.deep.equal(envEmptyJson)
-        envTest({ path: envSimple, safe: envSimpleExample }).should.deep.equal(envSimpleJson)
+      test('Should load successfully if variables defined', () => {
+        expect(envTest({ path: envEmpty, safe: envEmptyExample })).toEqual(envEmptyJson)
+        expect(envTest({ path: envSimple, safe: envSimpleExample })).toEqual(envSimpleJson)
       })
 
-      it('Should fail if env does not match sample.', () => {
-        function errorTest () {
+      test('Should fail if env does not match sample.', () => {
+        try {
           envTest({ path: envEmpty, safe: envSimpleExample })
+          throw new Error('Should not get here')
+        } catch (err) {
+          expect(err.message).toEqual('Missing environment variable: TEST')
         }
-
-        errorTest.should.throw('Missing environment variable')
       })
     })
 
     describe('Defaults configuration', () => {
-      it('should support default configurations', () => {
-        envTest({ defaults: true }).should.deep.equal(envDefaultsJson)
+      test('should support default configurations', () => {
+        expect(envTest({ defaults: true })).toEqual(envDefaultsJson)
       })
 
-      it('should support string configurations', () => {
-        envTest({ defaults: envDefaults }).should.deep.equal(envDefaultsJson2)
+      test('should support string configurations', () => {
+        expect(envTest({ defaults: envDefaults })).toEqual(envDefaultsJson2)
       })
 
-      it('Should display warning when default cannot be loaded', () => {
-        envTest({ defaults: '.does.not.exist' }).should.deep.equal(envDefJson)
-        consoleSpy.calledOnce.should.equal(true)
+      test('Should display warning when default cannot be loaded', () => {
+        const envDefaultName = '.does.not.exist'
+        expect(envTest({ defaults: envDefaultName })).toEqual(envDefJson)
+        expect(global.console.warn).toHaveBeenCalledWith(`Failed to load ${envDefaultName}.`)
       })
     })
 
     describe('System variables', () => {
-      it('Should allow system env variables', () => {
+      test('Should allow system env variables', () => {
         const test = envTest({ path: envSimple, systemvars: true })
         const key = Object.keys(envSimpleJson)[0]
         const value = envSimpleJson[key]
-        test[key].should.equal(value)
-        Object.keys(test).length.should.be.above(Object.keys(envSimpleJson).length)
+        expect(test[key]).toEqual(value)
+        expect(Object.keys(test).length > Object.keys(envSimpleJson).length).toEqual(true)
       })
 
-      it('should pass if the systemvar satisfies the requirement', () => {
+      test('should pass if the systemvar satisfies the requirement', () => {
         const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env.PATH']
-        PATH.should.be.a('string')
-        PATH.should.contain('/')
+        expect(typeof PATH).toEqual('string')
+        expect(PATH.indexOf('/') !== -1).toEqual(true)
       })
 
-      it('should not allow local variables to override systemvars', () => {
-        envTest({ path: envSystemvars, systemvars: true })['process.env.PATH'].should.not.equal('""')
+      test('should not allow local variables to override systemvars', () => {
+        expect(envTest({ path: envSystemvars, systemvars: true })['process.env.PATH2'] !== '""').toEqual(true)
       })
     })
 
     describe('Empty variables', () => {
-      it('Should load fine (not-safe)', () => {
-        envTest({ path: envOneEmpty }).should.deep.equal(envOneEmptyJson)
+      test('Should load fine (not-safe)', () => {
+        expect(envTest({ path: envOneEmpty })).toEqual(envOneEmptyJson)
       })
 
-      it('Should fail on safe mode', () => {
-        function errorTest () {
+      test('Should fail on safe mode', () => {
+        try {
           envTest({ path: envOneEmpty, safe: envOneEmptyExample })
+          throw new Error('Should not get here')
+        } catch (err) {
+          expect(err.message).toEqual('Missing environment variable: TEST')
         }
-
-        errorTest.should.throw('Missing environment variable')
       })
 
-      it('Should succeed in safe mode if allowEmptyValues is true', () => {
-        envTest({ path: envOneEmpty, safe: envOneEmptyExample, allowEmptyValues: true }).should.deep.equal(envOneEmptyJson)
+      test('Should succeed in safe mode if allowEmptyValues is true', () => {
+        expect(envTest({ path: envOneEmpty, safe: envOneEmptyExample, allowEmptyValues: true })).toEqual(envOneEmptyJson)
       })
     })
 
     describe('Missing a variable', () => {
-      it('Should load fine (not-safe)', () => {
-        envTest({ path: envMissingOne }).should.deep.equal(envMissingOneJson)
+      test('Should load fine (not-safe)', () => {
+        expect(envTest({ path: envMissingOne })).toEqual(envMissingOneJson)
       })
 
-      it('Should fail on safe mode (if allowEmptyValues is false)', () => {
-        function errorTest () {
+      test('Should fail on safe mode (if allowEmptyValues is false)', () => {
+        try {
           envTest({ path: envMissingOne, safe: envMissingOneExample })
+          throw new Error('Should not get here')
+        } catch (err) {
+          expect(err.message).toEqual('Missing environment variable: TEST')
         }
-
-        errorTest.should.throw('Missing environment variable')
       })
     })
 
     describe('Deprecated configuration', () => {
-      it('Should use safe when safe and sample set', () => {
-        envTest({ path: envSimple, safe: true, sample: envSimpleExample }).should.deep.equal(envSimpleJson)
+      test('Should use safe when safe and sample set', () => {
+        expect(envTest({ path: envSimple, safe: true, sample: envSimpleExample })).toEqual(envSimpleJson)
       })
 
-      it('Should display deprecation warning by default', () => {
-        envTest({ path: envSimple, safe: true, sample: envSimpleExample }).should.deep.equal(envSimpleJson)
-        consoleSpy.calledOnce.should.equal(true)
+      test('Should display deprecation warning by default', () => {
+        expect(envTest({ path: envSimple, safe: true, sample: envSimpleExample })).toEqual(envSimpleJson)
+        expect(global.console.warn).toHaveBeenCalled()
       })
 
-      it('Should not display deprecation warning when silent mode enabled', () => {
-        envTest({ path: envSimple, safe: true, sample: envSimpleExample, silent: true }).should.deep.equal(envSimpleJson)
-        consoleSpy.called.should.equal(false)
+      test('Should not display deprecation warning when silent mode enabled', () => {
+        expect(envTest({ path: envSimple, safe: true, sample: envSimpleExample, silent: true })).toEqual(envSimpleJson)
+        expect(global.console.warn).toHaveBeenCalledTimes(0)
       })
 
-      it('Should fail naturally when using deprecated values', () => {
-        function errorTest () {
+      test('Should fail naturally when using deprecated values', () => {
+        try {
           envTest({ path: envMissingOne, safe: true, sample: envMissingOneExample })
+          throw new Error('Should not get here')
+        } catch (err) {
+          expect(err.message).toEqual('Missing environment variable: TEST')
         }
-
-        errorTest.should.throw('Missing environment variable')
       })
 
-      it('Should not fail naturally when using deprecated values improperly', () => {
-        envTest({ path: envMissingOne, sample: envMissingOneExample }).should.deep.equal(envMissingOneJson)
+      test('Should not fail naturally when using deprecated values improperly', () => {
+        expect(envTest({ path: envMissingOne, sample: envMissingOneExample })).toEqual(envMissingOneJson)
       })
     })
 
     describe('Silent mode', () => {
-      it('Should display warning by default', () => {
+      test('Should display warning by default', () => {
         envTest({ path: false })
-        consoleSpy.calledOnce.should.equal(true)
+        expect(global.console.warn).toHaveBeenCalled()
       })
 
-      it('Should not display warning when silent mode enabled', () => {
+      test('Should not display warning when silent mode enabled', () => {
         envTest({ path: false, silent: true })
-        consoleSpy.called.should.equal(false)
+        expect(global.console.warn).toHaveBeenCalledTimes(0)
       })
     })
   })
 }
 
 describe('Tests', () => {
-  runTests(Src, 'Source')
+  runTests(Src.default, 'Source')
+  runTests(Dist.default, 'Dist')
 })
