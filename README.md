@@ -5,7 +5,7 @@ A secure webpack plugin that supports dotenv and other environment variables and
     <img alt="npm" src="https://img.shields.io/npm/v/dotenv-webpack.svg?maxAge=0&style=flat" />
   </a>
   <a href="https://travis-ci.org/mrsteele/dotenv-webpack" target="_blank">
-    <img alt="Travis" src="https://travis-ci.org/mrsteele/dotenv-webpack.svg?branch=master" />
+    <img alt="Travis" src="https://travis-ci.com/mrsteele/dotenv-webpack.svg?branch=master" />
   </a>
   <a href="https://david-dm.org/mrsteele/dotenv-webpack" target="_blank">
     <img alt="Dependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack.svg" />
