@@ -56,7 +56,7 @@
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
     "husky": "^4.2.5",
-    "jest": "^25.0.0",
+    "jest": "^26.2.2",
     "rimraf": "^3.0.0",
     "sinon": "^9.0.2",
     "standard": "^14.0.0",
