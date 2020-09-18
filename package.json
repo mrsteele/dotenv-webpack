@@ -45,22 +45,22 @@
     "webpack": "^1 || ^2 || ^3 || ^4 || ^5"
   },
   "dependencies": {
-    "dotenv-defaults": "^2.0.0"
+    "dotenv-defaults": "^2.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/register": "^7.10.4",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/register": "^7.11.5",
     "chai": "^4.1.2",
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
-    "husky": "^4.2.5",
+    "husky": "^4.3.0",
     "jest": "^25.0.0",
     "rimraf": "^3.0.0",
-    "sinon": "^9.0.2",
+    "sinon": "^9.0.3",
     "standard": "^14.0.0",
-    "webpack": "^4.6.0"
+    "webpack": "^4.44.2"
   },
   "files": [
     "dist"
