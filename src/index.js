@@ -123,7 +123,7 @@ class Dotenv {
 
   formatData (vars = {}) {
     const { expand } = this.config
-    return Object.keys(vars).reduce((obj, key) => {
+    const formatted = Object.keys(vars).reduce((obj, key) => {
       const v = vars[key]
       const vKey = `process.env.${key}`
       let vValue
@@ -143,6 +143,12 @@ class Dotenv {
 
       return obj
     }, {})
+
+    // supporting webpack 5
+    formatted.process = '{"env": {}}'
+    formatted['process.env'] = '{}'
+
+    return formatted
   }
 
   /**
