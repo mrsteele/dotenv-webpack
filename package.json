@@ -60,7 +60,7 @@
     "rimraf": "^3.0.0",
     "sinon": "^9.0.3",
     "standard": "^14.0.0",
-    "webpack": "^4.44.2"
+    "webpack": "^5.1.0"
   },
   "files": [
     "dist"
