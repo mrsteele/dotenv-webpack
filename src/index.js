@@ -144,10 +144,6 @@ class Dotenv {
       return obj
     }, {})
 
-    // supporting webpack 5
-    formatted.process = '{"env": {}}'
-    formatted['process.env'] = '{}'
-
     return formatted
   }
 
