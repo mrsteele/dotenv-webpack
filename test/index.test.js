@@ -20,10 +20,14 @@ const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example
 const envExpanded = path.resolve(__dirname, './envs/.expanded')
 const envDefaults = path.resolve(__dirname, './envs/.defaults')
 
-const buildExpectation = (obj) => Object.keys(obj).reduce((all, key) => {
-  all[`process.env.${key}`] = JSON.stringify(obj[key])
-  return all
-}, {})
+const buildExpectation = (obj) => {
+  const raw = Object.keys(obj).reduce((all, key) => {
+    all[`process.env.${key}`] = JSON.stringify(obj[key])
+    return all
+  }, {})
+
+  return raw
+}
 
 const envDefJson = buildExpectation({ TEST: 'hi' })
 const envEmptyJson = buildExpectation({})
