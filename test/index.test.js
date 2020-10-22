@@ -198,12 +198,20 @@ function runTests (Obj, name) {
     })
 
     describe('System variables', () => {
-      test('Should allow system env variables', () => {
+      test('Should allow all system env variables', () => {
         const test = envTest({ path: envSimple, systemvars: true })
         const key = Object.keys(envSimpleJson)[0]
         const value = envSimpleJson[key]
         expect(test[key]).toEqual(value)
-        expect(Object.keys(test).length > Object.keys(envSimpleJson).length).toEqual(true)
+        expect(Object.keys(test).length > Object.keys(envSimpleJson).length + 1).toEqual(true)
+      })
+
+      test('Should allow only specific system env variables', () => {
+        const test = envTest({ path: envSimple, systemvars: ['PATH'] })
+        const key = Object.keys(envSimpleJson)[0]
+        const value = envSimpleJson[key]
+        expect(test[key]).toEqual(value)
+        expect(Object.keys(test).length === Object.keys(envSimpleJson).length + 1).toEqual(true)
       })
 
       test('should pass if the systemvar satisfies the requirement', () => {

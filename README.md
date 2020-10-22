@@ -94,10 +94,10 @@ Add `.env` to your `.gitignore` file
 Use the following properties to configure your instance.
 
 * **path** (`'./.env'`) - The path to your environment variables.
-* **safe** (`false`) - If true, load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
-* **allowEmptyValues** (`false`) - Whether to allow empty strings in safe mode. If false, will throw an error if any env variables are empty (but only if safe mode is enabled).
-* **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
-* **silent** (`false`) - If true, all warnings will be suppressed.
+* **safe** (`false`) - If `true`, load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
+* **allowEmptyValues** (`false`) - Whether to allow empty strings in safe mode. If `false`, will throw an error if any env variables are empty (but only if safe mode is enabled).
+* **systemvars** (`false`) - If `true`, will load all system variables (useful for CI purposes). Set to an array of system variable names that should be loaded (useful for security purposes).
+* **silent** (`false`) - If `true`, all warnings will be suppressed.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
 * **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at https://www.npmjs.com/package/dotenv-defaults.
 
@@ -111,7 +111,7 @@ module.exports = {
       path: './some.other.env', // load this now instead of the ones in '.env'
       safe: true, // load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
       allowEmptyValues: true, // allow empty variables (e.g. `FOO=`) (treat it as empty string, rather than missing)
-      systemvars: true, // load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
+      systemvars: ['VAR1', 'VAR2', 'VAR3'], // load these specific 'process.env' variables which will trump anything local per dotenv specs.
       silent: true, // hide any errors
       defaults: false // load '.env.defaults' as the default values if empty.
     })
