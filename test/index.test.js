@@ -22,9 +22,9 @@ const envDefaults = path.resolve(__dirname, './envs/.defaults')
 
 const buildExpectation = (obj) => {
   const raw = Object.keys(obj).reduce((all, key) => {
-    all[`process.env.${key}`] = JSON.stringify(obj[key])
+    all['process.env'][key] = JSON.stringify(obj[key])
     return all
-  }, {})
+  }, { 'process.env': {} })
 
   return raw
 }
@@ -199,15 +199,16 @@ function runTests (Obj, name) {
 
     describe('System variables', () => {
       test('Should allow system env variables', () => {
-        const test = envTest({ path: envSimple, systemvars: true })
-        const key = Object.keys(envSimpleJson)[0]
-        const value = envSimpleJson[key]
+        const test = envTest({ path: envSimple, systemvars: true })['process.env']
+        const env = envSimpleJson['process.env']
+        const key = Object.keys(env)[0]
+        const value = env[key]
         expect(test[key]).toEqual(value)
-        expect(Object.keys(test).length > Object.keys(envSimpleJson).length).toEqual(true)
+        expect(Object.keys(test).length > Object.keys(env).length).toEqual(true)
       })
 
       test('should pass if the systemvar satisfies the requirement', () => {
-        const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env.PATH']
+        const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env'].PATH
         expect(typeof PATH).toEqual('string')
         expect(PATH.indexOf('/') !== -1).toEqual(true)
       })

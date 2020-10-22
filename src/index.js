@@ -121,7 +121,6 @@ class Dotenv {
     const { expand } = this.config
     const formatted = Object.keys(vars).reduce((obj, key) => {
       const v = vars[key]
-      const vKey = `process.env.${key}`
       let vValue
       if (expand) {
         if (v.substring(0, 2) === '\\$') {
@@ -135,12 +134,14 @@ class Dotenv {
         vValue = v
       }
 
-      obj[vKey] = JSON.stringify(vValue)
+      obj[key] = JSON.stringify(vValue)
 
       return obj
     }, {})
 
-    return formatted
+    return {
+      'process.env': formatted
+    }
   }
 
   /**
