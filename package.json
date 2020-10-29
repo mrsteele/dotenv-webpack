@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/mrsteele/dotenv-webpack#readme",
   "peerDependencies": {
-    "webpack": "^1 || ^2 || ^3 || ^4"
+    "webpack": "^1 || ^2 || ^3 || ^4 || ^5"
   },
   "dependencies": {
     "dotenv-defaults": "^2.0.1"

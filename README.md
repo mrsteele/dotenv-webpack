@@ -89,6 +89,10 @@ By allowing you to define exactly where you are loading environment variables fr
 
 Add `.env` to your `.gitignore` file
 
+### Limitations
+
+Due to the fact that we use `webpack.DefinePlugin` under the hood, we cannot support destructing as that breaks how this plugin is meant to be used. Because of this, please reference your variables in their without destructing. For more information about this, please review the issue here: https://github.com/mrsteele/dotenv-webpack/issues/70.
+
 ### Properties
 
 Use the following properties to configure your instance.
