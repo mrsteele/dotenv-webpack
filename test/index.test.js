@@ -209,7 +209,7 @@ function runTests (Obj, name) {
       test('should pass if the systemvar satisfies the requirement', () => {
         const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env.PATH']
         expect(typeof PATH).toEqual('string')
-        expect(PATH.indexOf('/') !== -1).toEqual(true)
+        expect(PATH.indexOf('/') !== -1 || PATH.indexOf('\\') !== -1).toEqual(true)
       })
 
       test('should not allow local variables to override systemvars', () => {
