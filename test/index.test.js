@@ -26,6 +26,8 @@ const buildExpectation = (obj) => {
     return all
   }, {})
 
+  raw['process.env'] = '{}'
+
   return raw
 }
 
