@@ -140,6 +140,9 @@ class Dotenv {
       return obj
     }, {})
 
+    // fix in case of missing
+    formatted['process.env'] = '{}'
+
     return formatted
   }
 
