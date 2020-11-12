@@ -218,11 +218,11 @@ function runTests (Obj, name) {
         expect(envTest({ path: envSystemvars, systemvars: true })['process.env.PATH2'] !== '""').toEqual(true)
       })
 
-      it('Should give the highest priority for the system variables', () => {
+      test('Should give the highest priority for the system variables', () => {
         process.env.TEST = 'production'
         const test = envTest({ safe: true, systemvars: true, defaults: true })
-        test['process.env.TEST'].should.equal('"production"')
-        test['process.env.TEST2'].should.equal('"hidefault"')
+        expect(test['process.env.TEST']).toEqual('"production"')
+        expect(test['process.env.TEST2']).toEqual('"hidefault"')
         delete process.env.TEST
       })
     })
