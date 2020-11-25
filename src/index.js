@@ -68,7 +68,11 @@ class Dotenv {
 
     // add the leftovers
     if (safe) {
-      Object.assign(vars, env)
+      Object.keys(env).forEach((key) => {
+        if (!Object.prototype.hasOwnProperty.call(vars, key)) {
+          vars[key] = env[key]
+        }
+      })
     }
 
     return vars
