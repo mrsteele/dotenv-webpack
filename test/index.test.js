@@ -301,6 +301,15 @@ function runTests (Obj, name) {
         expect(global.console.warn).toHaveBeenCalledTimes(0)
       })
     })
+
+    describe('ignoreStub configuration', () => {
+      test('should stub process.env by default', () => {
+        expect(envTest()['process.env']).toEqual('{}')
+      })
+      test('should not stub process.env if set to true', () => {
+        expect(envTest({ ignoreStub: true })['process.env']).toBeUndefined()
+      })
+    })
   })
 }
 

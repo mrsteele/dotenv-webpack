@@ -145,7 +145,9 @@ class Dotenv {
     }, {})
 
     // fix in case of missing
-    formatted['process.env'] = '{}'
+    if (!this.config.ignoreStub) {
+      formatted['process.env'] = '{}'
+    }
 
     return formatted
   }
