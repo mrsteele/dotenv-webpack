@@ -55,7 +55,7 @@
     "chai": "^4.1.2",
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
-    "husky": "^4.3.0",
+    "husky": "^5.0.9",
     "jest": "^25.0.0",
     "rimraf": "^3.0.0",
     "sinon": "^9.0.3",
