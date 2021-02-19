@@ -4,6 +4,7 @@
   "version": "0.0.0-semantically-released",
   "main": "index.js",
   "scripts": {
+    "precommit": "npm run lint",
     "prepush": "npm t",
     "lint": "standard",
     "predoc": "rimraf docs",

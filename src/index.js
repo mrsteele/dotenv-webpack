@@ -118,7 +118,7 @@ class Dotenv {
       })
     }
 
-    return '';
+    return ''
   }
 
   formatData (vars = {}) {
