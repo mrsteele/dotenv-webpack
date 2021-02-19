@@ -2,7 +2,7 @@
 
 Pull requests are accepted.
 
-### Acceptance Criteria
+## Acceptance Criteria
 
 Pull requests will be **considered** if they pass the following criteria:
 
@@ -14,7 +14,7 @@ If all of the above is passed, your request will be considered. Please allow
 for a few days for follow-up to your request. Any issues with your request
 will be posted directly to the request itself.
 
-### Commit Format
+## Commit Format
 
 Commits should match the suggested workflow and format.
 
