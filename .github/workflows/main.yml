@@ -2,6 +2,17 @@ name: Main
 on: push
 
 jobs:
+  setup:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: Install dependencies
+      run: npm i
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
   super-lint:
