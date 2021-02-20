@@ -5,11 +5,15 @@ jobs:
   setup:
     name: Setup
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node: [ '8', '10', '12', '14' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        node-version: ${{ matrix.node }}
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
@@ -22,7 +26,7 @@ jobs:
     # Name the Job
     name: Lint code base
     # Set the type of machine to run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: setup
     steps:
       # Runs the Super-Linter action
@@ -31,10 +35,26 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  main:
+  test:
     name: Test
     runs-on: ubuntu-18.04
     needs: setup
     steps:
       - name: Test
         run: npm t
+  release:
+    name: Release
+    runs-on: ubuntu-18.04
+    needs: test
+    steps:
+      - name: 🚀 Release
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          semantic_version: 17
+          branches: |
+            [
+              'main'
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
