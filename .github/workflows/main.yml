@@ -3,6 +3,9 @@ on: push
 
 jobs:
   setup:
+    name: Setup
+    runs-on: ubuntu-18.04
+    steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
