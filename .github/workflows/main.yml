@@ -12,6 +12,10 @@ jobs:
     # Set the type of machine to run on
     runs-on: ubuntu-18.04
     steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -30,6 +34,10 @@ jobs:
     name: Test
     runs-on: ubuntu-18.04
     steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -47,6 +55,10 @@ jobs:
     runs-on: ubuntu-18.04
     needs: test
     steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2
         with:
