@@ -75,7 +75,7 @@ class Dotenv {
       })
     }
 
-    return vars
+    return {}
   }
 
   initializeVars () {
