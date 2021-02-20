@@ -2,24 +2,6 @@ name: Main
 on: push
 
 jobs:
-  setup:
-    name: Setup
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        node: [ '8', '10', '12', '14' ]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        node-version: ${{ matrix.node }}
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12
-    - name: Install dependencies
-      run: npm i
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
   super-lint:
@@ -27,8 +9,15 @@ jobs:
     name: Lint code base
     # Set the type of machine to run on
     runs-on: ubuntu-18.04
-    needs: setup
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
       # Runs the Super-Linter action
       - name: Run Super-Linter
         uses: github/super-linter@v3
@@ -38,8 +27,20 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-18.04
-    needs: setup
     steps:
+      name: Setup
+      runs-on: ubuntu-18.04
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install dependencies
+        run: npm i
       - name: Test
         run: npm t
   release:
