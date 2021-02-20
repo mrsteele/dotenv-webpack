@@ -13,7 +13,7 @@ const interpolate = (env, vars) => {
     env = env.replace(match, variable)
   })
 
-  return env
+  return env;
 }
 
 class Dotenv {
