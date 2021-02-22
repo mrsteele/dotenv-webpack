@@ -9,8 +9,8 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <a href="https://codecov.io/gh/mrsteele/dotenv-webpack" target="_blank">
     <img alt="codecov" src="https://codecov.io/gh/mrsteele/dotenv-webpack/branch/master/graph/badge.svg" />
   </a>
-  <a href="https://travis-ci.org/mrsteele/dotenv-webpack" target="_blank">
-    <img alt="Travis" src="https://travis-ci.com/mrsteele/dotenv-webpack.svg?branch=master" />
+  <a href="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml" target="_blank">
+    <img alt="Main" src="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml/badge.svg" />
   </a>
   <a href="https://david-dm.org/mrsteele/dotenv-webpack" target="_blank">
     <img alt="Dependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack.svg" />
