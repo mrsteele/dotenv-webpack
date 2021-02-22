@@ -1,0 +1,99 @@
+name: Main
+on: push
+
+# TODO - Need to not repeat the checkout and setup node steps...
+
+jobs:
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm i
+      - uses: goto-bus-stop/standard-action@v1
+        with:
+          # optionally select a different, standard-like linter
+          # linter: semistandard
+
+          # optionally select a different eslint formatter for the log output, default 'stylish'
+          # formatter: tap
+
+          # limit the files to lint, default '**/*.js'
+          # files: src/*.js
+
+          # show errors in the the github diff UI
+          annotate: true
+
+        # Allow the action to add lint errors to the github diff UI
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  test:
+    name: Test ${{ matrix.node }}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node: [ '8', '10', '12', '14' ]
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install dependencies
+        run: npm i
+      - name: Test
+        run: npm t
+  release:
+    name: Release
+    runs-on: ubuntu-18.04
+    needs: [
+      test,
+      lint
+    ]
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Build
+        run: npm i && npm run build
+      - name: 🚀 Release
+        uses: cycjimmy/semantic-release-action@v2
+        with:
+          semantic_version: 17
+          branches: |
+            [
+              'master'
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
