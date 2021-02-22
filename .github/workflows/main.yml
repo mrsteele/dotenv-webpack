@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: 12
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm i
       - uses: goto-bus-stop/standard-action@v1
         with:
           # optionally select a different, standard-like linter
