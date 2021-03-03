@@ -16,6 +16,9 @@ const interpolate = (env, vars) => {
   return env
 }
 
+const isMainThreadElectron = (target) =>
+  target.startsWith('electron') && target.endsWith('main')
+
 class Dotenv {
   /**
    * The dotenv-webpack plugin.
@@ -154,7 +157,7 @@ class Dotenv {
     // https://github.com/mrsteele/dotenv-webpack/issues/240#issuecomment-710231534
     // However, if someone targets Node or Electron `process.env` still exists, and should therefore be kept
     // https://webpack.js.org/configuration/target
-    if (!target.startsWith('node') && !target.startsWith('electron')) {
+    if (!target.startsWith('node') && !isMainThreadElectron(target)) {
       // Results in `"MISSING_ENV_VAR".NAME` which is valid JS
       formatted['process.env'] = '"MISSING_ENV_VAR"'
     }
