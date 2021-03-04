@@ -307,7 +307,7 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
       )
 
       compile(config, (result) => {
-        expect(result).toMatch('const TEST = "MISSING_ENV_VAR".TEST')
+        expect(result).toMatch('const TEST = {}.TEST')
         expect(result).not.toMatch('const PATH = ""')
 
         done()

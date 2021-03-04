@@ -32,8 +32,14 @@ class Dotenv {
     }, config)
 
     this.checkDeprecation()
+  }
 
-    return new DefinePlugin(this.formatData(this.gatherVariables()))
+  apply (compiler) {
+    const target = compiler.options.target ?? 'web'
+    const variables = this.gatherVariables()
+    const data = this.formatData(variables, target)
+
+    new DefinePlugin(data).apply(compiler)
   }
 
   checkDeprecation () {
