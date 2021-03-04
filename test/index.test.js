@@ -456,49 +456,4 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
       )
     })
   })
-
-  describe('process.env stubbing', () => {
-    const expectToBeStubbed = (result) => {
-      expect(result).toMatch('const TEST = "testing"')
-      expect(result).toMatch('const TEST2 = "MISSING_ENV_VAR".TEST2')
-      expect(result).toMatch('const NODE_ENV = "development"')
-      expect(result).toMatch('const MONGOLAB_USER = "MISSING_ENV_VAR".MONGOLAB_USER')
-    }
-
-    const expectNotToBeStubbed = (result) => {
-      expect(result).toMatch('const TEST = "testing"')
-      expect(result).toMatch('const TEST2 = process.env.TEST2')
-      expect(result).toMatch('const NODE_ENV = "development"')
-      expect(result).toMatch('const MONGOLAB_USER = process.env.MONGOLAB_USER')
-    }
-
-    const plugin = new DotenvPlugin({ path: envSimple })
-    const cases = [
-      ['web', true],
-      ['es5', true],
-      ['es2020', true],
-      ['electron-renderer', true],
-      ['electron9-renderer', true],
-      ['electron-preload', true],
-      ['node', false],
-      ['node14', false],
-      ['electron-main', false],
-      ['electron9-main', false]
-    ]
-
-    test.each(cases)('%s', (target, shouldStub, done) => {
-      compile(
-        getConfig(target, plugin),
-        (result) => {
-          if (shouldStub) {
-            expectToBeStubbed(result)
-          } else {
-            expectNotToBeStubbed(result)
-          }
-
-          done()
-        }
-      )
-    })
-  })
 })
