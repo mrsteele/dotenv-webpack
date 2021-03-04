@@ -1,4 +1,4 @@
-/* global jest, describe, test, expect, beforeEach */
+/* global jest, describe, test, expect, beforeAll, beforeEach */
 
 const { resolve } = require('path')
 const webpack = require('webpack')
@@ -19,6 +19,12 @@ const envSystemvars = resolve(__dirname, './envs/.systemvars')
 const envSystemvarsExample = resolve(__dirname, './envs/.systemvars.example')
 const envExpanded = resolve(__dirname, './envs/.expanded')
 const envDefaults = resolve(__dirname, './envs/.defaults')
+
+const emptyResult = {}
+const defaultEnvResult = { TEST: 'hi' }
+const simpleResult = { TEST: 'testing' }
+const defaultsResult = { TEST: 'hi', TEST2: 'hidefault' }
+const defaultsResult2 = { TEST: 'hi', TEST2: 'youcanseethis' }
 
 const getConfig = (target, plugin) => ({
   mode: 'development',
@@ -45,9 +51,15 @@ const compile = (config, callback) => {
   })
 }
 
-const expectResultsToContainReplacements = (result, env) => {
-  Object.entries(env).forEach(([key, value]) => {
-    expect(result).toMatch(`const ${key} = "${value}"`)
+const expectResultsToContainReplacements = (plugin, env, done) => {
+  const config = getConfig('web', plugin)
+
+  compile(config, (result) => {
+    Object.entries(env).forEach(([key, value]) => {
+      expect(result).toMatch(`const ${key} = "${value}"`)
+    })
+
+    done?.()
   })
 }
 
@@ -56,7 +68,13 @@ const versions = [
   ['Dist', Dist.default]
 ]
 
+beforeAll(() => {
+  global.console.warn = jest.fn()
+})
+
 beforeEach(() => {
+  jest.resetAllMocks()
+
   rmdirSync(resolve(__dirname, 'output'), { recursive: true })
 })
 
@@ -71,46 +89,40 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
   describe('Defaults', () => {
     test('Should include environment variables that exist in .env file.', (done) => {
-      const config = getConfig('web', new DotenvPlugin())
-
-      compile(config, (result) => {
-        expectResultsToContainReplacements(result, { TEST: 'hi' })
-
-        done()
-      })
+      expectResultsToContainReplacements(new DotenvPlugin(), defaultEnvResult, done)
     })
 
     test('Should not expand variables by default', (done) => {
-      const config = getConfig('web', new DotenvPlugin({ path: envExpanded }))
+      const expected = {
+        NODE_ENV: 'test',
+        BASIC: 'basic',
+        BASIC_EXPAND: '$BASIC',
+        MACHINE: 'machine_env',
+        MACHINE_EXPAND: '$MACHINE',
+        UNDEFINED_EXPAND: '$UNDEFINED_ENV_KEY',
+        // eslint-disable-next-line
+        ESCAPED_EXPAND: '\\\\$ESCAPED',
+        MONGOLAB_DATABASE: 'heroku_db',
+        MONGOLAB_USER: 'username',
+        MONGOLAB_PASSWORD: 'password',
+        MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
+        MONGOLAB_PORT: '12345',
+        // eslint-disable-next-line
+        MONGOLAB_URI: 'mongodb://${MONGOLAB_USER}:${MONGOLAB_PASSWORD}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
+        // eslint-disable-next-line
+        MONGOLAB_USER_RECURSIVELY: '${MONGOLAB_USER}:${MONGOLAB_PASSWORD}',
+        // eslint-disable-next-line
+        MONGOLAB_URI_RECURSIVELY: 'mongodb://${MONGOLAB_USER_RECURSIVELY}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
+        WITHOUT_CURLY_BRACES_URI: 'mongodb://$MONGOLAB_USER:$MONGOLAB_PASSWORD@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE',
+        WITHOUT_CURLY_BRACES_USER_RECURSIVELY: '$MONGOLAB_USER:$MONGOLAB_PASSWORD',
+        WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://$MONGOLAB_USER_RECURSIVELY@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE'
+      }
 
-      compile(config, (result) => {
-        expectResultsToContainReplacements(result, {
-          NODE_ENV: 'test',
-          BASIC: 'basic',
-          BASIC_EXPAND: '$BASIC',
-          MACHINE: 'machine_env',
-          MACHINE_EXPAND: '$MACHINE',
-          UNDEFINED_EXPAND: '$UNDEFINED_ENV_KEY',
-          // eslint-disable-next-line
-          ESCAPED_EXPAND: '\\\\$ESCAPED',
-          MONGOLAB_DATABASE: 'heroku_db',
-          MONGOLAB_USER: 'username',
-          MONGOLAB_PASSWORD: 'password',
-          MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
-          MONGOLAB_PORT: '12345',
-          // eslint-disable-next-line
-          MONGOLAB_URI: 'mongodb://${MONGOLAB_USER}:${MONGOLAB_PASSWORD}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
-          // eslint-disable-next-line
-          MONGOLAB_USER_RECURSIVELY: '${MONGOLAB_USER}:${MONGOLAB_PASSWORD}',
-          // eslint-disable-next-line
-          MONGOLAB_URI_RECURSIVELY: 'mongodb://${MONGOLAB_USER_RECURSIVELY}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
-          WITHOUT_CURLY_BRACES_URI: 'mongodb://$MONGOLAB_USER:$MONGOLAB_PASSWORD@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE',
-          WITHOUT_CURLY_BRACES_USER_RECURSIVELY: '$MONGOLAB_USER:$MONGOLAB_PASSWORD',
-          WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://$MONGOLAB_USER_RECURSIVELY@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE'
-        })
-
-        done()
-      })
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envExpanded }),
+        expected,
+        done
+      )
     })
 
     test('Should expand variables when configured', (done) => {
@@ -144,6 +156,99 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
         done()
       })
+    })
+  })
+
+  describe('Simple configuration', () => {
+    test('Should load enviornment variables when they exist in the .env file.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envExpanded }),
+        simpleResult,
+        done
+      )
+    })
+
+    test('Should be an empty object when no environment variables exist in .env file.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: false }),
+        emptyResult,
+        done
+      )
+    })
+
+    test('Should recognize safe-mode', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ safe: true }),
+        defaultEnvResult,
+        done
+      )
+    })
+
+    test('Should fail when not passing safe-mode', (done) => {
+      const config = getConfig('web', new DotenvPlugin({ path: envEmpty, safe: true }))
+
+      webpack(config, (err) => {
+        expect(err.message).toBe('Missing environment variable: TEST')
+
+        done()
+      })
+    })
+  })
+
+  describe('Safe configuration', () => {
+    test('Should load successfully if variables defined', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envEmpty, safe: envEmptyExample }),
+        emptyResult
+      )
+
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envSimple, safe: envSimpleExample }),
+        simpleResult,
+        done
+      )
+    })
+
+    test('Should fail if env does not match sample.', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envEmpty, safe: envSimpleExample })
+      )
+
+      webpack(config, (err) => {
+        expect(err.message).toBe('Missing environment variable: TEST')
+
+        done()
+      })
+    })
+  })
+
+  describe('Defaults configuration', () => {
+    test('should support default configurations', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: true }),
+        defaultsResult,
+        done
+      )
+    })
+
+    test('should support string configurations', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: envDefaults }),
+        defaultsResult2,
+        done
+      )
+    })
+
+    test('Should display warning when default cannot be loaded', (done) => {
+      const envDefaultName = '.does.not.exist'
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: envDefaultName }),
+        defaultEnvResult,
+        done
+      )
+
+      expect(global.console.warn).toHaveBeenCalledWith(`Failed to load ${envDefaultName}.`)
     })
   })
 
