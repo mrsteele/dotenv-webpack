@@ -4,6 +4,9 @@
 const TEST = process.env.TEST
 const TEST2 = process.env.TEST2
 
+// System
+const PATH = process.env.PATH
+
 // Expanded
 const NODE_ENV = process.env.NODE_ENV
 const BASIC = process.env.BASIC

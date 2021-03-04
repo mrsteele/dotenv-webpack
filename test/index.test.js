@@ -1,310 +1,498 @@
-/* global jest, describe, test, expect, beforeEach */
+/* global jest, describe, test, expect, afterEach, beforeAll, beforeEach */
 
-// Tests suite
-const path = require('path')
+const { resolve } = require('path')
+const { createHash } = require('crypto')
+const webpack = require('webpack')
+const { readFileSync, rmdirSync } = require('fs')
 
-// The star of the show
 const Src = require('../src')
 const Dist = require('../dist')
 
-const envEmpty = path.resolve(__dirname, './envs/.empty')
-const envEmptyExample = path.resolve(__dirname, './envs/.empty.example')
-const envSimple = path.resolve(__dirname, './envs/.simple')
-const envSimpleExample = path.resolve(__dirname, './envs/.simple.example')
-const envOneEmpty = path.resolve(__dirname, './envs/.oneempty')
-const envOneEmptyExample = path.resolve(__dirname, './envs/.oneempty.example')
-const envMissingOne = path.resolve(__dirname, './envs/.missingone')
-const envMissingOneExample = path.resolve(__dirname, './envs/.missingone.example')
-const envSystemvars = path.resolve(__dirname, './envs/.systemvars')
-const envSystemvarsExample = path.resolve(__dirname, './envs/.systemvars.example')
-const envExpanded = path.resolve(__dirname, './envs/.expanded')
-const envDefaults = path.resolve(__dirname, './envs/.defaults')
+const envEmpty = resolve(__dirname, './envs/.empty')
+const envEmptyExample = resolve(__dirname, './envs/.empty.example')
+const envSimple = resolve(__dirname, './envs/.simple')
+const envSimpleExample = resolve(__dirname, './envs/.simple.example')
+const envOneEmpty = resolve(__dirname, './envs/.oneempty')
+const envOneEmptyExample = resolve(__dirname, './envs/.oneempty.example')
+const envMissingOne = resolve(__dirname, './envs/.missingone')
+const envMissingOneExample = resolve(__dirname, './envs/.missingone.example')
+const envSystemvars = resolve(__dirname, './envs/.systemvars')
+const envSystemvarsExample = resolve(__dirname, './envs/.systemvars.example')
+const envExpanded = resolve(__dirname, './envs/.expanded')
+const envDefaults = resolve(__dirname, './envs/.defaults')
 
-const buildExpectation = (obj) => {
-  const raw = Object.keys(obj).reduce((all, key) => {
-    all[`process.env.${key}`] = JSON.stringify(obj[key])
-    return all
-  }, {})
+const emptyResult = {}
+const defaultEnvResult = { TEST: 'hi' }
+const simpleResult = { TEST: 'testing' }
+const defaultsResult = { TEST: 'hi', TEST2: 'hidefault' }
+const defaultsResult2 = { TEST: 'hi', TEST2: 'youcanseethis' }
+const oneEmptyResult = { TEST: '', TEST2: 'Hello' }
+const missingOneResult = { TEST2: 'Hello' }
 
-  raw['process.env'] = '{}'
+const hash = (str) => createHash('md5').update(str).digest('hex').slice(0, 8)
 
-  return raw
-}
-
-const envDefJson = buildExpectation({ TEST: 'hi' })
-const envEmptyJson = buildExpectation({})
-const envSimpleJson = buildExpectation({ TEST: 'testing' })
-const envOneEmptyJson = buildExpectation({ TEST: '', TEST2: 'Hello' })
-const envMissingOneJson = buildExpectation({ TEST2: 'Hello' })
-const envDefaultsJson = buildExpectation({ TEST: 'hi', TEST2: 'hidefault' })
-const envDefaultsJson2 = buildExpectation({ TEST: 'hi', TEST2: 'youcanseethis' })
-
-/*
-NODE_ENV=test
-BASIC=basic
-BASIC_EXPAND=$BASIC
-MACHINE=machine_env
-MACHINE_EXPAND=$MACHINE
-UNDEFINED_EXPAND=$UNDEFINED_ENV_KEY
-ESCAPED_EXPAND=\$ESCAPED
-MONGOLAB_DATABASE=heroku_db
-MONGOLAB_USER=username
-MONGOLAB_PASSWORD=password
-MONGOLAB_DOMAIN=abcd1234.mongolab.com
-MONGOLAB_PORT=12345
-MONGOLAB_URI=mongodb://${MONGOLAB_USER}:${MONGOLAB_PASSWORD}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}
-
-MONGOLAB_USER_RECURSIVELY=${MONGOLAB_USER}:${MONGOLAB_PASSWORD}
-MONGOLAB_URI_RECURSIVELY=mongodb://${MONGOLAB_USER_RECURSIVELY}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}
-
-WITHOUT_CURLY_BRACES_URI=mongodb://$MONGOLAB_USER:$MONGOLAB_PASSWORD@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE
-WITHOUT_CURLY_BRACES_USER_RECURSIVELY=$MONGOLAB_USER:$MONGOLAB_PASSWORD
-WITHOUT_CURLY_BRACES_URI_RECURSIVELY=mongodb://$MONGOLAB_USER_RECURSIVELY@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE
-*/
-const envExpandedNotJson = buildExpectation({
-  NODE_ENV: 'test',
-  BASIC: 'basic',
-  BASIC_EXPAND: '$BASIC',
-  MACHINE: 'machine_env',
-  MACHINE_EXPAND: '$MACHINE',
-  UNDEFINED_EXPAND: '$UNDEFINED_ENV_KEY',
-  // eslint-disable-next-line
-  ESCAPED_EXPAND: '\\$ESCAPED',
-  MONGOLAB_DATABASE: 'heroku_db',
-  MONGOLAB_USER: 'username',
-  MONGOLAB_PASSWORD: 'password',
-  MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
-  MONGOLAB_PORT: '12345',
-  // eslint-disable-next-line
-  MONGOLAB_URI: 'mongodb://${MONGOLAB_USER}:${MONGOLAB_PASSWORD}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
-  // eslint-disable-next-line
-  MONGOLAB_USER_RECURSIVELY: '${MONGOLAB_USER}:${MONGOLAB_PASSWORD}',
-  // eslint-disable-next-line
-  MONGOLAB_URI_RECURSIVELY: 'mongodb://${MONGOLAB_USER_RECURSIVELY}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
-  WITHOUT_CURLY_BRACES_URI: 'mongodb://$MONGOLAB_USER:$MONGOLAB_PASSWORD@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE',
-  WITHOUT_CURLY_BRACES_USER_RECURSIVELY: '$MONGOLAB_USER:$MONGOLAB_PASSWORD',
-  WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://$MONGOLAB_USER_RECURSIVELY@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE'
-})
-const envExpandedJson = buildExpectation({
-  NODE_ENV: 'test',
-  BASIC: 'basic',
-  BASIC_EXPAND: 'basic',
-  MACHINE: 'machine_env',
-  MACHINE_EXPAND: 'machine_env',
-  UNDEFINED_EXPAND: '',
-  // eslint-disable-next-line
-  ESCAPED_EXPAND: '\$ESCAPED',
-  MONGOLAB_DATABASE: 'heroku_db',
-  MONGOLAB_USER: 'username',
-  MONGOLAB_PASSWORD: 'password',
-  MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
-  MONGOLAB_PORT: '12345',
-  MONGOLAB_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
-  MONGOLAB_USER_RECURSIVELY: 'username:password',
-  MONGOLAB_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
-  WITHOUT_CURLY_BRACES_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
-  WITHOUT_CURLY_BRACES_USER_RECURSIVELY: 'username:password',
-  WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db'
+const getConfig = (target, plugin) => ({
+  mode: 'development',
+  devtool: false,
+  target,
+  entry: resolve(__dirname, './fixtures/index'),
+  output: {
+    path: resolve(__dirname, `./output/${hash(expect.getState().currentTestName)}`)
+  },
+  plugins: [plugin]
 })
 
-// const consoleSpy = jest.spyOn(console, 'warn')
-global.console.warn = jest.fn()
+const compile = (config, callback) => {
+  webpack(config, (err, stats) => {
+    expect(err).toBeNull()
+    expect(stats.compilation.errors).toHaveLength(0)
 
-function runTests (Obj, name) {
-  function envTest (config) {
-    return new Obj(config).definitions
-  }
+    const result = readFileSync(
+      resolve(__dirname, config.output.path, 'main.js'),
+      { encoding: 'utf-8' }
+    )
 
-  /** @test {Dotenv} **/
-  describe(name, () => {
-    beforeEach(() => {
-      global.console.warn.mockClear()
-    })
-
-    describe('Defaults', () => {
-      test('Should be an function.', () => {
-        expect(typeof Obj).toEqual('function')
-      })
-
-      // @todo - This one isn't a great test, but it wasn't really working for me.
-      test('Should return a instance of DefinePlugin.', () => {
-        expect(typeof envTest()).toEqual('object')
-      })
-
-      test('Should include environment variables that exist in .env file.', () => {
-        expect(envTest()).toEqual(envDefJson)
-      })
-
-      test('Should not expand variables by default', () => {
-        expect(envTest({ path: envExpanded })).toEqual(envExpandedNotJson)
-      })
-
-      test('Should expand variables when configured', () => {
-        expect(envTest({ path: envExpanded, expand: true })).toEqual(envExpandedJson)
-      })
-    })
-
-    describe('Simple configuration', () => {
-      test('Should load enviornment variables when they exist in the .env file.', () => {
-        expect(envTest({ path: envSimple })).toEqual(envSimpleJson)
-      })
-
-      test('Should be an empty object when no environment variables exist in .env file.', () => {
-        expect(envTest({ path: false })).toEqual(envEmptyJson)
-      })
-
-      test('Should recognize safe-mode', () => {
-        expect(envTest({ safe: true })).toEqual(envDefJson)
-      })
-
-      test('Should fail when not passing safe-mode', () => {
-        try {
-          envTest({ path: envEmpty, safe: true })
-          throw new Error('Should not get here')
-        } catch (err) {
-          expect(err.message).toEqual('Missing environment variable: TEST')
-        }
-      })
-    })
-
-    describe('Safe configuration', () => {
-      test('Should load successfully if variables defined', () => {
-        expect(envTest({ path: envEmpty, safe: envEmptyExample })).toEqual(envEmptyJson)
-        expect(envTest({ path: envSimple, safe: envSimpleExample })).toEqual(envSimpleJson)
-      })
-
-      test('Should fail if env does not match sample.', () => {
-        try {
-          envTest({ path: envEmpty, safe: envSimpleExample })
-          throw new Error('Should not get here')
-        } catch (err) {
-          expect(err.message).toEqual('Missing environment variable: TEST')
-        }
-      })
-    })
-
-    describe('Defaults configuration', () => {
-      test('should support default configurations', () => {
-        expect(envTest({ defaults: true })).toEqual(envDefaultsJson)
-      })
-
-      test('should support string configurations', () => {
-        expect(envTest({ defaults: envDefaults })).toEqual(envDefaultsJson2)
-      })
-
-      test('Should display warning when default cannot be loaded', () => {
-        const envDefaultName = '.does.not.exist'
-        expect(envTest({ defaults: envDefaultName })).toEqual(envDefJson)
-        expect(global.console.warn).toHaveBeenCalledWith(`Failed to load ${envDefaultName}.`)
-      })
-    })
-
-    describe('System variables', () => {
-      test('Should allow system env variables', () => {
-        const test = envTest({ path: envSimple, systemvars: true })
-        const key = Object.keys(envSimpleJson)[0]
-        const value = envSimpleJson[key]
-        expect(test[key]).toEqual(value)
-        expect(Object.keys(test).length > Object.keys(envSimpleJson).length).toEqual(true)
-      })
-
-      test('should pass if the systemvar satisfies the requirement', () => {
-        const PATH = envTest({ safe: envSystemvarsExample, systemvars: true })['process.env.PATH']
-        expect(typeof PATH).toEqual('string')
-        expect(PATH.indexOf('/') !== -1 || PATH.indexOf('\\') !== -1).toEqual(true)
-      })
-
-      test('should not allow local variables to override systemvars', () => {
-        expect(envTest({ path: envSystemvars, systemvars: true })['process.env.PATH2'] !== '""').toEqual(true)
-      })
-
-      test('Should give the highest priority for the system variables', () => {
-        process.env.TEST = 'production'
-        const test = envTest({ safe: true, systemvars: true, defaults: true })
-        expect(test['process.env.TEST']).toEqual('"production"')
-        expect(test['process.env.TEST2']).toEqual('"hidefault"')
-        delete process.env.TEST
-      })
-    })
-
-    describe('Empty variables', () => {
-      test('Should load fine (not-safe)', () => {
-        expect(envTest({ path: envOneEmpty })).toEqual(envOneEmptyJson)
-      })
-
-      test('Should fail on safe mode', () => {
-        try {
-          envTest({ path: envOneEmpty, safe: envOneEmptyExample })
-          throw new Error('Should not get here')
-        } catch (err) {
-          expect(err.message).toEqual('Missing environment variable: TEST')
-        }
-      })
-
-      test('Should succeed in safe mode if allowEmptyValues is true', () => {
-        expect(envTest({ path: envOneEmpty, safe: envOneEmptyExample, allowEmptyValues: true })).toEqual(envOneEmptyJson)
-      })
-    })
-
-    describe('Missing a variable', () => {
-      test('Should load fine (not-safe)', () => {
-        expect(envTest({ path: envMissingOne })).toEqual(envMissingOneJson)
-      })
-
-      test('Should fail on safe mode (if allowEmptyValues is false)', () => {
-        try {
-          envTest({ path: envMissingOne, safe: envMissingOneExample })
-          throw new Error('Should not get here')
-        } catch (err) {
-          expect(err.message).toEqual('Missing environment variable: TEST')
-        }
-      })
-    })
-
-    describe('Deprecated configuration', () => {
-      test('Should use safe when safe and sample set', () => {
-        expect(envTest({ path: envSimple, safe: true, sample: envSimpleExample })).toEqual(envSimpleJson)
-      })
-
-      test('Should display deprecation warning by default', () => {
-        expect(envTest({ path: envSimple, safe: true, sample: envSimpleExample })).toEqual(envSimpleJson)
-        expect(global.console.warn).toHaveBeenCalled()
-      })
-
-      test('Should not display deprecation warning when silent mode enabled', () => {
-        expect(envTest({ path: envSimple, safe: true, sample: envSimpleExample, silent: true })).toEqual(envSimpleJson)
-        expect(global.console.warn).toHaveBeenCalledTimes(0)
-      })
-
-      test('Should fail naturally when using deprecated values', () => {
-        try {
-          envTest({ path: envMissingOne, safe: true, sample: envMissingOneExample })
-          throw new Error('Should not get here')
-        } catch (err) {
-          expect(err.message).toEqual('Missing environment variable: TEST')
-        }
-      })
-
-      test('Should not fail naturally when using deprecated values improperly', () => {
-        expect(envTest({ path: envMissingOne, sample: envMissingOneExample })).toEqual(envMissingOneJson)
-      })
-    })
-
-    describe('Silent mode', () => {
-      test('Should display warning by default', () => {
-        envTest({ path: false })
-        expect(global.console.warn).toHaveBeenCalled()
-      })
-
-      test('Should not display warning when silent mode enabled', () => {
-        envTest({ path: false, silent: true })
-        expect(global.console.warn).toHaveBeenCalledTimes(0)
-      })
-    })
+    callback(result)
   })
 }
 
-describe('Tests', () => {
-  runTests(Src.default, 'Source')
-  runTests(Dist.default, 'Dist')
+const expectResultsToContainReplacements = (plugin, env, done) => {
+  const config = getConfig('web', plugin)
+
+  compile(config, (result) => {
+    Object.entries(env).forEach(([key, value]) => {
+      expect(result).toMatch(`const ${key} = "${value}"`)
+    })
+
+    done?.()
+  })
+}
+
+const versions = [
+  ['Source', Src.default],
+  ['Dist', Dist.default]
+]
+
+beforeAll(() => {
+  global.console.warn = jest.fn()
+})
+
+beforeEach(() => {
+  jest.resetAllMocks()
+
+  rmdirSync(resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`), { recursive: true })
+})
+
+describe.each(versions)('%s', (_, DotenvPlugin) => {
+  test('Should be an function.', () => {
+    expect(typeof DotenvPlugin).toEqual('function')
+  })
+
+  test('Should return a instance of Dotenv.', () => {
+    expect((new DotenvPlugin()).constructor.name).toEqual('Dotenv')
+  })
+
+  describe('Defaults', () => {
+    test('Should include environment variables that exist in .env file.', (done) => {
+      expectResultsToContainReplacements(new DotenvPlugin(), defaultEnvResult, done)
+    })
+
+    test('Should not expand variables by default', (done) => {
+      const expected = {
+        NODE_ENV: 'test',
+        BASIC: 'basic',
+        BASIC_EXPAND: '$BASIC',
+        MACHINE: 'machine_env',
+        MACHINE_EXPAND: '$MACHINE',
+        UNDEFINED_EXPAND: '$UNDEFINED_ENV_KEY',
+        // eslint-disable-next-line
+        ESCAPED_EXPAND: '\\\\$ESCAPED',
+        MONGOLAB_DATABASE: 'heroku_db',
+        MONGOLAB_USER: 'username',
+        MONGOLAB_PASSWORD: 'password',
+        MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
+        MONGOLAB_PORT: '12345',
+        // eslint-disable-next-line
+        MONGOLAB_URI: 'mongodb://${MONGOLAB_USER}:${MONGOLAB_PASSWORD}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
+        // eslint-disable-next-line
+        MONGOLAB_USER_RECURSIVELY: '${MONGOLAB_USER}:${MONGOLAB_PASSWORD}',
+        // eslint-disable-next-line
+        MONGOLAB_URI_RECURSIVELY: 'mongodb://${MONGOLAB_USER_RECURSIVELY}@${MONGOLAB_DOMAIN}:${MONGOLAB_PORT}/${MONGOLAB_DATABASE}',
+        WITHOUT_CURLY_BRACES_URI: 'mongodb://$MONGOLAB_USER:$MONGOLAB_PASSWORD@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE',
+        WITHOUT_CURLY_BRACES_USER_RECURSIVELY: '$MONGOLAB_USER:$MONGOLAB_PASSWORD',
+        WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://$MONGOLAB_USER_RECURSIVELY@$MONGOLAB_DOMAIN:$MONGOLAB_PORT/$MONGOLAB_DATABASE'
+      }
+
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envExpanded }),
+        expected,
+        done
+      )
+    })
+
+    test('Should expand variables when configured', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envExpanded, expand: true })
+      )
+
+      compile(config, (result) => {
+        expectResultsToContainReplacements(result, {
+          NODE_ENV: 'test',
+          BASIC: 'basic',
+          BASIC_EXPAND: 'basic',
+          MACHINE: 'machine_env',
+          MACHINE_EXPAND: 'machine_env',
+          UNDEFINED_EXPAND: '',
+          // eslint-disable-next-line
+          ESCAPED_EXPAND: '\$ESCAPED',
+          MONGOLAB_DATABASE: 'heroku_db',
+          MONGOLAB_USER: 'username',
+          MONGOLAB_PASSWORD: 'password',
+          MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
+          MONGOLAB_PORT: '12345',
+          MONGOLAB_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+          MONGOLAB_USER_RECURSIVELY: 'username:password',
+          MONGOLAB_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+          WITHOUT_CURLY_BRACES_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+          WITHOUT_CURLY_BRACES_USER_RECURSIVELY: 'username:password',
+          WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db'
+        })
+
+        done()
+      })
+    })
+  })
+
+  describe('Simple configuration', () => {
+    test('Should load enviornment variables when they exist in the .env file.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envExpanded }),
+        simpleResult,
+        done
+      )
+    })
+
+    test('Should be an empty object when no environment variables exist in .env file.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: false }),
+        emptyResult,
+        done
+      )
+    })
+
+    test('Should recognize safe-mode', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ safe: true }),
+        defaultEnvResult,
+        done
+      )
+    })
+
+    test('Should fail when not passing safe-mode', (done) => {
+      const config = getConfig('web', new DotenvPlugin({ path: envEmpty, safe: true }))
+
+      webpack(config, (err) => {
+        expect(err.message).toBe('Missing environment variable: TEST')
+
+        done()
+      })
+    })
+  })
+
+  describe('Safe configuration', () => {
+    test('Should load successfully if variables defined', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envEmpty, safe: envEmptyExample }),
+        emptyResult
+      )
+
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envSimple, safe: envSimpleExample }),
+        simpleResult,
+        done
+      )
+    })
+
+    test('Should fail if env does not match sample.', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envEmpty, safe: envSimpleExample })
+      )
+
+      webpack(config, (err) => {
+        expect(err.message).toBe('Missing environment variable: TEST')
+
+        done()
+      })
+    })
+  })
+
+  describe('Defaults configuration', () => {
+    test('should support default configurations', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: true }),
+        defaultsResult,
+        done
+      )
+    })
+
+    test('should support string configurations', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: envDefaults }),
+        defaultsResult2,
+        done
+      )
+    })
+
+    test('Should display warning when default cannot be loaded', (done) => {
+      const envDefaultName = '.does.not.exist'
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: envDefaultName }),
+        defaultEnvResult,
+        done
+      )
+
+      expect(global.console.warn).toHaveBeenCalledWith(`Failed to load ${envDefaultName}.`)
+    })
+  })
+
+  describe('System variables', () => {
+    const originalPath = process.env.PATH
+    beforeEach(() => {
+      process.env.PATH = '/usr/local/bin:/usr/local/sbin:'
+    })
+    afterEach(() => {
+      process.env.PATH = originalPath
+    })
+
+    test('Should allow system env variables', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envSimple, systemvars: true })
+      )
+
+      compile(config, (result) => {
+        expect(result).toMatch('const TEST = "testing"')
+        expect(result).toMatch('const PATH = "/usr/local/bin:/usr/local/sbin:')
+
+        done()
+      })
+    })
+
+    test('should pass if the systemvar satisfies the requirement', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ safe: envSystemvarsExample, systemvars: true })
+      )
+
+      compile(config, (result) => {
+        expect(result).toMatch('const TEST = "hi"')
+        expect(result).toMatch(/const PATH = ".*[\\/].*"/)
+
+        done()
+      })
+    })
+
+    test('should not allow local variables to override systemvars', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envSystemvars, systemvars: true })
+      )
+
+      compile(config, (result) => {
+        expect(result).toMatch('const TEST = "MISSING_ENV_VAR".TEST')
+        expect(result).not.toMatch('const PATH = ""')
+
+        done()
+      })
+    })
+
+    test('Should give the highest priority for the system variables', (done) => {
+      process.env.TEST = 'production'
+
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ safe: true, systemvars: true, defaults: true })
+      )
+
+      compile(config, (result) => {
+        expect(result).toMatch('const TEST = "production"')
+        expect(result).toMatch('const TEST2 = "hidefault"')
+
+        done()
+      })
+
+      delete process.env.TEST
+    })
+  })
+
+  describe('Empty variables', () => {
+    test('Should load fine (not-safe)', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envOneEmpty }),
+        oneEmptyResult,
+        done
+      )
+    })
+
+    test('Should fail on safe mode', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envOneEmpty, safe: envOneEmptyExample })
+      )
+
+      webpack(config, (err) => {
+        expect(err.message).toBe('Missing environment variable: TEST')
+
+        done()
+      })
+    })
+
+    test('Should succeed in safe mode if allowEmptyValues is true', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envOneEmpty, safe: envOneEmptyExample, allowEmptyValues: true }),
+        oneEmptyResult,
+        done
+      )
+    })
+  })
+
+  describe('Missing a variable', () => {
+    test('Should load fine (not-safe)', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envMissingOne }),
+        missingOneResult,
+        done
+      )
+    })
+
+    test('Should fail on safe mode (if allowEmptyValues is false)', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envMissingOne, safe: envMissingOneExample })
+      )
+
+      webpack(config, (err) => {
+        expect(err.message).toBe('Missing environment variable: TEST')
+
+        done()
+      })
+    })
+  })
+
+  describe('Deprecated configuration', () => {
+    test('Should use safe when safe and sample set', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envSimple, safe: true, sample: envSimpleExample }),
+        simpleResult,
+        done
+      )
+    })
+
+    test('Should display deprecation warning by default', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envSimple, safe: true, sample: envSimpleExample }),
+        simpleResult,
+        done
+      )
+      expect(global.console.warn).toHaveBeenCalled()
+    })
+
+    test('Should not display deprecation warning when silent mode enabled', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envSimple, safe: true, sample: envSimpleExample, silent: true }),
+        simpleResult,
+        done
+      )
+      expect(global.console.warn).toHaveBeenCalledTimes(0)
+    })
+
+    test('Should fail naturally when using deprecated values', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envMissingOne, safe: true, sample: envMissingOneExample })
+      )
+
+      webpack(config, (err) => {
+        expect(err.message).toBe('Missing environment variable: TEST')
+
+        done()
+      })
+    })
+
+    test('Should not fail naturally when using deprecated values improperly', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envMissingOne, sample: envMissingOneExample }),
+        missingOneResult,
+        done
+      )
+    })
+  })
+
+  describe('Silent mode', () => {
+    test('Should display warning by default', (done) => {
+      compile(getConfig('web', new DotenvPlugin({ path: false })), () => {
+        expect(global.console.warn).toHaveBeenCalled()
+
+        done()
+      })
+    })
+
+    test('Should not display warning when silent mode enabled', (done) => {
+      compile(
+        getConfig('web', new DotenvPlugin({ path: false, silent: true })),
+        () => {
+          expect(global.console.warn).toHaveBeenCalledTimes(0)
+
+          done()
+        }
+      )
+    })
+  })
+
+  describe('process.env stubbing', () => {
+    const expectToBeStubbed = (result) => {
+      expect(result).toMatch('const TEST = "testing"')
+      expect(result).toMatch('const TEST2 = "MISSING_ENV_VAR".TEST2')
+      expect(result).toMatch('const NODE_ENV = "development"')
+      expect(result).toMatch('const MONGOLAB_USER = "MISSING_ENV_VAR".MONGOLAB_USER')
+    }
+
+    const expectNotToBeStubbed = (result) => {
+      expect(result).toMatch('const TEST = "testing"')
+      expect(result).toMatch('const TEST2 = process.env.TEST2')
+      expect(result).toMatch('const NODE_ENV = "development"')
+      expect(result).toMatch('const MONGOLAB_USER = process.env.MONGOLAB_USER')
+    }
+
+    const plugin = new DotenvPlugin({ path: envSimple })
+    const cases = [
+      ['web', true],
+      ['es5', true],
+      ['es2020', true],
+      ['electron-renderer', true],
+      ['electron9-renderer', true],
+      ['electron-preload', true],
+      ['node', false],
+      ['node14', false],
+      ['electron-main', false],
+      ['electron9-main', false]
+    ]
+
+    test.each(cases)('%s', (target, shouldStub, done) => {
+      compile(
+        getConfig(target, plugin),
+        (result) => {
+          if (shouldStub) {
+            expectToBeStubbed(result)
+          } else {
+            expectNotToBeStubbed(result)
+          }
+
+          done()
+        }
+      )
+    })
+  })
 })
