@@ -131,43 +131,40 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
     })
 
     test('Should expand variables when configured', (done) => {
-      const config = getConfig(
-        'web',
-        new DotenvPlugin({ path: envExpanded, expand: true })
+      const expected = {
+        NODE_ENV: 'test',
+        BASIC: 'basic',
+        BASIC_EXPAND: 'basic',
+        MACHINE: 'machine_env',
+        MACHINE_EXPAND: 'machine_env',
+        UNDEFINED_EXPAND: '',
+        // eslint-disable-next-line
+        ESCAPED_EXPAND: '\$ESCAPED',
+        MONGOLAB_DATABASE: 'heroku_db',
+        MONGOLAB_USER: 'username',
+        MONGOLAB_PASSWORD: 'password',
+        MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
+        MONGOLAB_PORT: '12345',
+        MONGOLAB_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+        MONGOLAB_USER_RECURSIVELY: 'username:password',
+        MONGOLAB_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+        WITHOUT_CURLY_BRACES_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
+        WITHOUT_CURLY_BRACES_USER_RECURSIVELY: 'username:password',
+        WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db'
+      }
+
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envExpanded, expand: true }),
+        expected,
+        done
       )
-
-      compile(config, (result) => {
-        expectResultsToContainReplacements(result, {
-          NODE_ENV: 'test',
-          BASIC: 'basic',
-          BASIC_EXPAND: 'basic',
-          MACHINE: 'machine_env',
-          MACHINE_EXPAND: 'machine_env',
-          UNDEFINED_EXPAND: '',
-          // eslint-disable-next-line
-          ESCAPED_EXPAND: '\$ESCAPED',
-          MONGOLAB_DATABASE: 'heroku_db',
-          MONGOLAB_USER: 'username',
-          MONGOLAB_PASSWORD: 'password',
-          MONGOLAB_DOMAIN: 'abcd1234.mongolab.com',
-          MONGOLAB_PORT: '12345',
-          MONGOLAB_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
-          MONGOLAB_USER_RECURSIVELY: 'username:password',
-          MONGOLAB_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
-          WITHOUT_CURLY_BRACES_URI: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db',
-          WITHOUT_CURLY_BRACES_USER_RECURSIVELY: 'username:password',
-          WITHOUT_CURLY_BRACES_URI_RECURSIVELY: 'mongodb://username:password@abcd1234.mongolab.com:12345/heroku_db'
-        })
-
-        done()
-      })
     })
   })
 
   describe('Simple configuration', () => {
     test('Should load enviornment variables when they exist in the .env file.', (done) => {
       expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envExpanded }),
+        new DotenvPlugin({ path: envSimple }),
         simpleResult,
         done
       )
