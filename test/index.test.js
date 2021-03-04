@@ -80,7 +80,15 @@ beforeAll(() => {
 beforeEach(() => {
   jest.resetAllMocks()
 
-  rmdirSync(resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`), { recursive: true })
+  const outputDir = resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`)
+  try {
+    rmdirSync(outputDir, { recursive: true })
+  } catch (err) {
+    // rmdir might error if the target doesn't exist, but we don't care about that.
+    if (!err.message.includes('ENOENT')) {
+      throw err
+    }
+  }
 })
 
 describe.each(versions)('%s', (_, DotenvPlugin) => {
