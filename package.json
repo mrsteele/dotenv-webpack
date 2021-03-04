@@ -45,7 +45,7 @@
     "node": ">=10"
   },
   "peerDependencies": {
-    "webpack": "^1 || ^2 || ^3 || ^4 || ^5"
+    "webpack": "^4 || ^5"
   },
   "dependencies": {
     "dotenv-defaults": "^2.0.1"
