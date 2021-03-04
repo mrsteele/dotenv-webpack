@@ -41,6 +41,9 @@
     "url": "https://github.com/mrsteele/dotenv-webpack/issues"
   },
   "homepage": "https://github.com/mrsteele/dotenv-webpack#readme",
+  "engines": {
+    "node": ">=10"
+  },
   "peerDependencies": {
     "webpack": "^1 || ^2 || ^3 || ^4 || ^5"
   },
