@@ -106,6 +106,7 @@ Use the following properties to configure your instance.
 * **silent** (`false`) - If true, all warnings will be suppressed.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
 * **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at [npm](https://www.npmjs.com/package/dotenv-defaults).
+* **ignoreStub** (`false`) - By default, this package will stub `process.env` in environments it doesn't exist so that if a variable is not set, the application will still run and not run into an "Uncaught ReferenceError". If you are running into issues where you or another package you use interfaces with `process.env`, it might be best to set this to `true` and make sure you always reference variables that exist within your code (See [this issue](https://github.com/mrsteele/dotenv-webpack/issues/271) for more information).
 
 The following example shows how to set any/all arguments.
 

@@ -451,5 +451,37 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
         }
       )
     })
+
+    describe('ignoreStub override', () => {
+      // `ignoreStub == null` case is covered by above test
+
+      test('should never stub if set to true', (done) => {
+        const plugin = new DotenvPlugin({ ignoreStub: true, path: envSimple })
+
+        compile(getConfig('web', plugin), (result) => {
+          expectNotToBeStubbed(result)
+
+          compile(getConfig('node', plugin), (result) => {
+            expectNotToBeStubbed(result)
+
+            done()
+          })
+        })
+      })
+
+      test('should always stub if set to false', (done) => {
+        const plugin = new DotenvPlugin({ ignoreStub: false, path: envSimple })
+
+        compile(getConfig('web', plugin), (result) => {
+          expectToBeStubbed(result)
+
+          compile(getConfig('node', plugin), (result) => {
+            expectToBeStubbed(result)
+
+            done()
+          })
+        })
+      })
+    })
   })
 })
