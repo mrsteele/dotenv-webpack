@@ -33,8 +33,6 @@ class Dotenv {
     this.config = Object.assign({}, {
       path: './.env'
     }, config)
-
-    this.checkDeprecation()
   }
 
   apply (compiler) {
@@ -43,17 +41,6 @@ class Dotenv {
     const data = this.formatData(variables, target)
 
     new DefinePlugin(data).apply(compiler)
-  }
-
-  checkDeprecation () {
-    const { sample, safe, silent } = this.config
-    // Catch older packages, but hold their hand (just for a bit)
-    if (sample) {
-      if (safe) {
-        this.config.safe = sample
-      }
-      this.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.', silent)
-    }
   }
 
   gatherVariables () {

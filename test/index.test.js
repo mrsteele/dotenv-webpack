@@ -387,55 +387,6 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
     })
   })
 
-  describe('Deprecated configuration', () => {
-    test('Should use safe when safe and sample set', (done) => {
-      expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envSimple, safe: true, sample: envSimpleExample }),
-        simpleResult,
-        done
-      )
-    })
-
-    test('Should display deprecation warning by default', (done) => {
-      expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envSimple, safe: true, sample: envSimpleExample }),
-        simpleResult,
-        done
-      )
-      expect(global.console.warn).toHaveBeenCalled()
-    })
-
-    test('Should not display deprecation warning when silent mode enabled', (done) => {
-      expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envSimple, safe: true, sample: envSimpleExample, silent: true }),
-        simpleResult,
-        done
-      )
-      expect(global.console.warn).toHaveBeenCalledTimes(0)
-    })
-
-    test('Should fail naturally when using deprecated values', (done) => {
-      const config = getConfig(
-        'web',
-        new DotenvPlugin({ path: envMissingOne, safe: true, sample: envMissingOneExample })
-      )
-
-      webpack(config, (err) => {
-        expect(err.message).toBe('Missing environment variable: TEST')
-
-        done()
-      })
-    })
-
-    test('Should not fail naturally when using deprecated values improperly', (done) => {
-      expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envMissingOne, sample: envMissingOneExample }),
-        missingOneResult,
-        done
-      )
-    })
-  })
-
   describe('Silent mode', () => {
     test('Should display warning by default', (done) => {
       compile(getConfig('web', new DotenvPlugin({ path: false })), () => {
