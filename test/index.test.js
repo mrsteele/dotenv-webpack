@@ -201,13 +201,14 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
     test('Should load successfully if variables defined', (done) => {
       expectResultsToContainReplacements(
         new DotenvPlugin({ path: envEmpty, safe: envEmptyExample }),
-        emptyResult
-      )
-
-      expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envSimple, safe: envSimpleExample }),
-        simpleResult,
-        done
+        emptyResult,
+        () => {
+          expectResultsToContainReplacements(
+            new DotenvPlugin({ path: envSimple, safe: envSimpleExample }),
+            simpleResult,
+            done
+          )
+        }
       )
     })
 
