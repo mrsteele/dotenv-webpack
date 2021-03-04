@@ -44,7 +44,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   test:
-    name: Test ${{ matrix.node }}
+    name: Test Node v${{ matrix.node }}
     runs-on: ubuntu-18.04
     strategy:
       matrix:
