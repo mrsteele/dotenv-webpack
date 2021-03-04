@@ -36,9 +36,14 @@ class Dotenv {
   }
 
   apply (compiler) {
-    const target = compiler.options.target ?? 'web'
     const variables = this.gatherVariables()
-    const data = this.formatData(variables, target)
+    const target = compiler.options.target ?? 'web'
+    const version = compiler.webpack.version
+    const data = this.formatData({
+      variables,
+      target,
+      version
+    })
 
     new DefinePlugin(data).apply(compiler)
   }
@@ -117,10 +122,10 @@ class Dotenv {
     return ''
   }
 
-  formatData (vars = {}, target) {
+  formatData ({ variables = {}, target, version }) {
     const { expand } = this.config
-    const formatted = Object.keys(vars).reduce((obj, key) => {
-      const v = vars[key]
+    const formatted = Object.keys(variables).reduce((obj, key) => {
+      const v = variables[key]
       const vKey = `process.env.${key}`
       let vValue
       if (expand) {
@@ -129,7 +134,7 @@ class Dotenv {
         } else if (v.indexOf('\\$') > 0) {
           vValue = v.replace(/\\\$/g, '$')
         } else {
-          vValue = interpolate(v, vars)
+          vValue = interpolate(v, variables)
         }
       } else {
         vValue = v
@@ -144,18 +149,28 @@ class Dotenv {
     // https://github.com/mrsteele/dotenv-webpack/issues/240#issuecomment-710231534
     // However, if someone targets Node or Electron `process.env` still exists, and should therefore be kept
     // https://webpack.js.org/configuration/target
-    if (
-      this.config.ignoreStub !== true &&
-      (
-        this.config.ignoreStub === false ||
-        (!target.startsWith('node') && !isMainThreadElectron(target))
-      )
-    ) {
+    if (this.shouldStub({ target, version })) {
       // Results in `"MISSING_ENV_VAR".NAME` which is valid JS
       formatted['process.env'] = '"MISSING_ENV_VAR"'
     }
 
     return formatted
+  }
+
+  shouldStub ({ target, version }) {
+    return (
+      // If we're on Webpack 5
+      version.startsWith('5') &&
+      // And we're not configured to not stub
+      this.config.ignoreStub !== true &&
+      // And
+      (
+        // We are configured to always stub
+        this.config.ignoreStub === false ||
+        // Or if we should according to the target
+        (!target.includes('node') && !isMainThreadElectron(target))
+      )
+    )
   }
 
   /**
