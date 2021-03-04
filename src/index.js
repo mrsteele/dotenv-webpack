@@ -145,8 +145,11 @@ class Dotenv {
     // However, if someone targets Node or Electron `process.env` still exists, and should therefore be kept
     // https://webpack.js.org/configuration/target
     if (
-      !this.config.ignoreStub &&
-      !target.startsWith('node') && !isMainThreadElectron(target)
+      this.config.ignoreStub !== true &&
+      (
+        this.config.ignoreStub === false ||
+        (!target.startsWith('node') && !isMainThreadElectron(target))
+      )
     ) {
       // Results in `"MISSING_ENV_VAR".NAME` which is valid JS
       formatted['process.env'] = '"MISSING_ENV_VAR"'
