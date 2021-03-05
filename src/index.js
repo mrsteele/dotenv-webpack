@@ -157,19 +157,22 @@ class Dotenv {
     return formatted
   }
 
-  shouldStub ({ target, version }) {
-    return (
-      // If we're on Webpack 5
-      version.startsWith('5') &&
-      // And we're not configured to not stub
-      this.config.ignoreStub !== true &&
-      // And
-      (
-        // We are configured to always stub
-        this.config.ignoreStub === false ||
-        // Or if we should according to the target
-        (!target.includes('node') && !isMainThreadElectron(target))
-      )
+  shouldStub ({ target: targetInput, version }) {
+    const targets = Array.isArray(targetInput) ? targetInput : [targetInput]
+
+    return targets.every(
+      target =>
+        // If we're on Webpack 5
+        version.startsWith('5') &&
+        // And we're not configured to not stub
+        this.config.ignoreStub !== true &&
+        // And
+        (
+          // We are configured to always stub
+          this.config.ignoreStub === false ||
+          // Or if we should according to the target
+          (!target.includes('node') && !isMainThreadElectron(target))
+        )
     )
   }
 

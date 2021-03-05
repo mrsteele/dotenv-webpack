@@ -426,15 +426,19 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
     const plugin = new DotenvPlugin({ path: envSimple })
     const cases = [
       ['web', true],
+      [['web'], true],
       ['es5', true],
       ['es2020', true],
+      [['es2020', 'web'], true],
       ['electron-renderer', true],
       ['electron9-renderer', true],
       ['electron-preload', true],
       ['node', false],
+      [['node'], false],
       ['node14', false],
       ['electron-main', false],
-      ['electron9-main', false]
+      ['electron9-main', false],
+      [['es2020', 'node'], false]
     ]
 
     test.each(cases)('%s', (target, shouldStub, done) => {
