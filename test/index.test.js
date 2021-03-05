@@ -3,7 +3,8 @@
 const { resolve } = require('path')
 const { createHash } = require('crypto')
 const webpack = require('webpack')
-const { readFileSync, rmdirSync } = require('fs')
+const { readFileSync } = require('fs')
+const { removeSync } = require('fs-extra')
 
 const Src = require('../src')
 const Dist = require('../dist')
@@ -82,7 +83,7 @@ beforeEach(() => {
 
   const outputDir = resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`)
   try {
-    rmdirSync(outputDir, { recursive: true })
+    removeSync(outputDir)
   } catch (err) {
     // rmdir might error if the target doesn't exist, but we don't care about that.
     if (!err.message.includes('ENOENT')) {
