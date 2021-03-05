@@ -95,6 +95,14 @@ Add `.env` to your `.gitignore` file
 
 Due to the fact that we use `webpack.DefinePlugin` under the hood, we cannot support destructing as that breaks how this plugin is meant to be used. Because of this, please reference your variables without destructing. For more information about this, please review the issue [here](https://github.com/mrsteele/dotenv-webpack/issues/70).
 
+## `process.env` stubbing / replacing
+
+`process.env` is not polyfilled in Webpack 5+, leading to errors in environments where `process` is `null` (browsers).
+
+We automatically replace any remaining `process.env`s in these environments with `"MISSING_ENV_VAR"` to avoid these errors.
+
+If you are running into issues where you or another package you use interfaces with `process.env`, it might be best to set `ignoreStubs: true` and make sure you always reference variables that exist within your code (See [this issue](https://github.com/mrsteele/dotenv-webpack/issues/271) for more information).
+
 ## Properties
 
 Use the following properties to configure your instance.
@@ -106,6 +114,7 @@ Use the following properties to configure your instance.
 * **silent** (`false`) - If true, all warnings will be suppressed.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
 * **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at [npm](https://www.npmjs.com/package/dotenv-defaults).
+* **ignoreStub** (`false`) - Override the automatic check whether to stub `process.env`. [Read more here](#user-content-processenv-stubbing--replacing).
 
 The following example shows how to set any/all arguments.
 

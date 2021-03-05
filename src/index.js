@@ -16,6 +16,9 @@ const interpolate = (env, vars) => {
   return env
 }
 
+const isMainThreadElectron = (target) =>
+  target.startsWith('electron') && target.endsWith('main')
+
 class Dotenv {
   /**
    * The dotenv-webpack plugin.
@@ -30,21 +33,19 @@ class Dotenv {
     this.config = Object.assign({}, {
       path: './.env'
     }, config)
-
-    this.checkDeprecation()
-
-    return new DefinePlugin(this.formatData(this.gatherVariables()))
   }
 
-  checkDeprecation () {
-    const { sample, safe, silent } = this.config
-    // Catch older packages, but hold their hand (just for a bit)
-    if (sample) {
-      if (safe) {
-        this.config.safe = sample
-      }
-      this.warn('dotenv-webpack: "options.sample" is a deprecated property. Please update your configuration to use "options.safe" instead.', silent)
-    }
+  apply (compiler) {
+    const variables = this.gatherVariables()
+    const target = compiler.options.target ?? 'web'
+    const version = compiler.webpack.version
+    const data = this.formatData({
+      variables,
+      target,
+      version
+    })
+
+    new DefinePlugin(data).apply(compiler)
   }
 
   gatherVariables () {
@@ -121,10 +122,10 @@ class Dotenv {
     return ''
   }
 
-  formatData (vars = {}) {
+  formatData ({ variables = {}, target, version }) {
     const { expand } = this.config
-    const formatted = Object.keys(vars).reduce((obj, key) => {
-      const v = vars[key]
+    const formatted = Object.keys(variables).reduce((obj, key) => {
+      const v = variables[key]
       const vKey = `process.env.${key}`
       let vValue
       if (expand) {
@@ -133,7 +134,7 @@ class Dotenv {
         } else if (v.indexOf('\\$') > 0) {
           vValue = v.replace(/\\\$/g, '$')
         } else {
-          vValue = interpolate(v, vars)
+          vValue = interpolate(v, variables)
         }
       } else {
         vValue = v
@@ -144,10 +145,37 @@ class Dotenv {
       return obj
     }, {})
 
-    // fix in case of missing
-    formatted['process.env'] = '{}'
+    // We have to stub any remaining `process.env`s due to Webpack 5 not polyfilling it anymore
+    // https://github.com/mrsteele/dotenv-webpack/issues/240#issuecomment-710231534
+    // However, if someone targets Node or Electron `process.env` still exists, and should therefore be kept
+    // https://webpack.js.org/configuration/target
+    if (this.shouldStub({ target, version })) {
+      // Results in `"MISSING_ENV_VAR".NAME` which is valid JS
+      formatted['process.env'] = '"MISSING_ENV_VAR"'
+    }
 
     return formatted
+  }
+
+  shouldStub ({ target: targetInput, version }) {
+    if (!version.startsWith('5')) {
+      return false
+    }
+
+    const targets = Array.isArray(targetInput) ? targetInput : [targetInput]
+
+    return targets.every(
+      target =>
+        // If we're not configured to never stub
+        this.config.ignoreStub !== true &&
+        // And
+        (
+          // We are configured to always stub
+          this.config.ignoreStub === false ||
+          // Or if we should according to the target
+          (!target.includes('node') && !isMainThreadElectron(target))
+        )
+    )
   }
 
   /**
