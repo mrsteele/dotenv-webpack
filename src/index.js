@@ -158,7 +158,7 @@ class Dotenv {
   }
 
   shouldStub ({ target: targetInput, version }) {
-    if (version.startsWith('5')) {
+    if (!version.startsWith('5')) {
       return false
     }
 
