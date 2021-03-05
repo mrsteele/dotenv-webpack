@@ -158,13 +158,15 @@ class Dotenv {
   }
 
   shouldStub ({ target: targetInput, version }) {
+    if (version.startsWith('5')) {
+      return false
+    }
+
     const targets = Array.isArray(targetInput) ? targetInput : [targetInput]
 
     return targets.every(
       target =>
-        // If we're on Webpack 5
-        version.startsWith('5') &&
-        // And we're not configured to not stub
+        // If we're not configured to never stub
         this.config.ignoreStub !== true &&
         // And
         (
