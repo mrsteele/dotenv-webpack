@@ -79,7 +79,16 @@ class Dotenv {
   }
 
   initializeVars () {
-    return (this.config.systemvars) ? Object.assign({}, process.env) : {}
+    if (this.config.systemvars) {
+      if (Array.isArray(this.config.systemvars)) {
+        return this.config.systemvars.reduce((result, key) => {
+          result[key] = process.env[key]
+          return result
+        }, {})
+      }
+      return Object.assign({}, process.env)
+    }
+    return {}
   }
 
   getEnvs () {
