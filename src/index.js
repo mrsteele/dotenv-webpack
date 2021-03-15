@@ -38,7 +38,7 @@ class Dotenv {
   apply (compiler) {
     const variables = this.gatherVariables()
     const target = compiler.options.target ?? 'web'
-    const version = compiler.webpack.version
+    const version = (compiler.webpack && compiler.webpack.version) || '4'
     const data = this.formatData({
       variables,
       target,
