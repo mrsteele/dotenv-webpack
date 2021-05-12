@@ -101,7 +101,7 @@ Due to the fact that we use `webpack.DefinePlugin` under the hood, we cannot sup
 
 We automatically replace any remaining `process.env`s in these environments with `"MISSING_ENV_VAR"` to avoid these errors.
 
-If you are running into issues where you or another package you use interfaces with `process.env`, it might be best to set `ignoreStubs: true` and make sure you always reference variables that exist within your code (See [this issue](https://github.com/mrsteele/dotenv-webpack/issues/271) for more information).
+If you are running into issues where you or another package you use interfaces with `process.env`, it might be best to set `ignoreStub: true` and make sure you always reference variables that exist within your code (See [this issue](https://github.com/mrsteele/dotenv-webpack/issues/271) for more information).
 
 ## Properties
 
