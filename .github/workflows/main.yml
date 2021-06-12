@@ -68,6 +68,7 @@ jobs:
         run: npm t
   release:
     name: Release
+    if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-18.04
     needs: [
       test,
