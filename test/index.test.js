@@ -4,7 +4,7 @@ const { resolve } = require('path')
 const { createHash } = require('crypto')
 const webpack = require('webpack')
 const { readFileSync } = require('fs')
-const rimraf = require('rimraf');
+const rimraf = require('rimraf')
 
 const Src = require('../src')
 const Dist = require('../dist')
