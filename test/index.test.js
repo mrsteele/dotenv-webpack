@@ -4,7 +4,7 @@ const { resolve } = require('path')
 const { createHash } = require('crypto')
 const webpack = require('webpack')
 const { readFileSync } = require('fs')
-const { rmdir } = require('fs').promises
+const rimraf = require('rimraf');
 
 const Src = require('../src')
 const Dist = require('../dist')
@@ -83,7 +83,7 @@ beforeEach((done) => {
 
   const outputDir = resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`)
 
-  rmdir(outputDir, { recursive: true }).then(done)
+  rimraf(outputDir, done)
 })
 
 describe.each(versions)('%s', (_, DotenvPlugin) => {
