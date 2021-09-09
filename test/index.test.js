@@ -4,7 +4,7 @@ const { resolve } = require('path')
 const { createHash } = require('crypto')
 const webpack = require('webpack')
 const { readFileSync } = require('fs')
-const { removeSync } = require('fs-extra')
+const { rmdir } = require('fs').promises
 
 const Src = require('../src')
 const Dist = require('../dist')
@@ -78,18 +78,12 @@ beforeAll(() => {
   global.console.warn = jest.fn()
 })
 
-beforeEach(() => {
+beforeEach((done) => {
   jest.resetAllMocks()
 
   const outputDir = resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`)
-  try {
-    removeSync(outputDir)
-  } catch (err) {
-    // rmdir might error if the target doesn't exist, but we don't care about that.
-    if (!err.message.includes('ENOENT')) {
-      throw err
-    }
-  }
+  
+  rmdir(outputDir, { recursive: true }).then(done)
 })
 
 describe.each(versions)('%s', (_, DotenvPlugin) => {
