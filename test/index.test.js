@@ -82,7 +82,7 @@ beforeEach((done) => {
   jest.resetAllMocks()
 
   const outputDir = resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`)
-  
+
   rmdir(outputDir, { recursive: true }).then(done)
 })
 

@@ -1,3 +1,3 @@
-var plugin = require('./dist').default
+const plugin = require('./dist').default
 
 module.exports = plugin
