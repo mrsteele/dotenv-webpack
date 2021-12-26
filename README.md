@@ -130,7 +130,7 @@ module.exports = {
       systemvars: true, // load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
       silent: true, // hide any errors
       defaults: false, // load '.env.defaults' as the default values if empty.
-      prefix: 'import.meta.env.' // reference your env variables as 'import.meta.env.ENV_VAR.
+      prefix: 'import.meta.env.' // reference your env variables as 'import.meta.env.ENV_VAR'.
     })
   ]
   ...
