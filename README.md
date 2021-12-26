@@ -115,6 +115,7 @@ Use the following properties to configure your instance.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
 * **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at [npm](https://www.npmjs.com/package/dotenv-defaults).
 * **ignoreStub** (`false`) - Override the automatic check whether to stub `process.env`. [Read more here](#user-content-processenv-stubbing--replacing).
+* **prefix** (`'process.env.'`) - The prefix to use before the name of your env variables.
 
 The following example shows how to set any/all arguments.
 
@@ -128,7 +129,8 @@ module.exports = {
       allowEmptyValues: true, // allow empty variables (e.g. `FOO=`) (treat it as empty string, rather than missing)
       systemvars: true, // load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
       silent: true, // hide any errors
-      defaults: false // load '.env.defaults' as the default values if empty.
+      defaults: false, // load '.env.defaults' as the default values if empty.
+      prefix: 'import.meta.env.'
     })
   ]
   ...

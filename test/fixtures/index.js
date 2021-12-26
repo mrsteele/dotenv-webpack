@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 
 // Basic
 const TEST = process.env.TEST
@@ -26,3 +27,7 @@ const MONGOLAB_URI_RECURSIVELY = process.env.MONGOLAB_URI_RECURSIVELY
 const WITHOUT_CURLY_BRACES_URI = process.env.WITHOUT_CURLY_BRACES_URI
 const WITHOUT_CURLY_BRACES_USER_RECURSIVELY = process.env.WITHOUT_CURLY_BRACES_USER_RECURSIVELY
 const WITHOUT_CURLY_BRACES_URI_RECURSIVELY = process.env.WITHOUT_CURLY_BRACES_URI_RECURSIVELY
+
+// Alternative prefix
+const TEST_ALT = meta.env.TEST
+const TEST2_ALT = meta.env.TEST2

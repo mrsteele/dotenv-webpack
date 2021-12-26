@@ -27,11 +27,13 @@ class Dotenv {
    * @param {Boolean|String} [options.safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
    * @param {Boolean} [options.systemvars=false] - If true, load system environment variables.
    * @param {Boolean} [options.silent=false] - If true, suppress warnings, if false, display warnings.
+   * @param {String} [options.prefix=process.env.] - The prefix, used to denote environment variables.
    * @returns {webpack.DefinePlugin}
    */
   constructor (config = {}) {
     this.config = Object.assign({}, {
-      path: './.env'
+      path: './.env',
+      prefix: 'process.env.'
     }, config)
   }
 
@@ -123,10 +125,10 @@ class Dotenv {
   }
 
   formatData ({ variables = {}, target, version }) {
-    const { expand } = this.config
+    const { expand, prefix } = this.config
     const formatted = Object.keys(variables).reduce((obj, key) => {
       const v = variables[key]
-      const vKey = `process.env.${key}`
+      const vKey = `${prefix}${key}`
       let vValue
       if (expand) {
         if (v.substring(0, 2) === '\\$') {
@@ -150,8 +152,9 @@ class Dotenv {
     // However, if someone targets Node or Electron `process.env` still exists, and should therefore be kept
     // https://webpack.js.org/configuration/target
     if (this.shouldStub({ target, version })) {
+      const replace = this.config.prefix.slice(0, -1) // Remove the dot in the end of prefix
       // Results in `"MISSING_ENV_VAR".NAME` which is valid JS
-      formatted['process.env'] = '"MISSING_ENV_VAR"'
+      formatted[replace] = '"MISSING_ENV_VAR"'
     }
 
     return formatted

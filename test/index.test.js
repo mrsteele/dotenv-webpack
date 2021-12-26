@@ -30,6 +30,12 @@ const defaultsResult2 = { TEST: 'hi', TEST2: 'youcanseethis' }
 const oneEmptyResult = { TEST: '', TEST2: 'Hello' }
 const missingOneResult = { TEST2: 'Hello' }
 
+const altDefaultEnvResult = { TEST_ALT: 'hi' }
+const altSimpleResult = { TEST_ALT: 'testing' }
+const altDefaultsResult = { TEST_ALT: 'hi', TEST2_ALT: 'hidefault' }
+const altDefaultsResult2 = { TEST_ALT: 'hi', TEST2_ALT: 'youcanseethis' }
+const altOneEmptyResult = { TEST_ALT: '', TEST2_ALT: 'Hello' }
+
 const hash = (str) => createHash('md5').update(str).digest('hex').slice(0, 8)
 
 const getConfig = (target, plugin) => ({
@@ -481,6 +487,48 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
           })
         })
       })
+    })
+  })
+
+  describe('Alternative prefix', () => {
+    test('Should include environment variables from .env file in the root dir.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ prefix: 'meta.env.' }),
+        altDefaultEnvResult,
+        done
+      )
+    })
+
+    test('Should include environment variables from provided .env file.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envSimple, prefix: 'meta.env.' }),
+        altSimpleResult,
+        done
+      )
+    })
+
+    test('Should include default environment variables from .env.defaults with .env overrides.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: true, prefix: 'meta.env.' }),
+        altDefaultsResult,
+        done
+      )
+    })
+
+    test('Should include default environment variables from provided defaults file with .env overrides.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ defaults: envDefaults, prefix: 'meta.env.' }),
+        altDefaultsResult2,
+        done
+      )
+    })
+
+    test('Should include environment variables with empty vars from provided .env file.', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ path: envOneEmpty, prefix: 'meta.env.' }),
+        altOneEmptyResult,
+        done
+      )
     })
   })
 })
