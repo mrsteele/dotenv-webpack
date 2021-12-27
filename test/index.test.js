@@ -491,9 +491,11 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
   })
 
   describe('Alternative prefix', () => {
+    const prefix = 'meta.env'
+
     test('Should include environment variables from .env file in the root dir.', (done) => {
       expectResultsToContainReplacements(
-        new DotenvPlugin({ prefix: 'meta.env.' }),
+        new DotenvPlugin({ prefix }),
         altDefaultEnvResult,
         done
       )
@@ -501,7 +503,7 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
     test('Should include environment variables from provided .env file.', (done) => {
       expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envSimple, prefix: 'meta.env.' }),
+        new DotenvPlugin({ path: envSimple, prefix }),
         altSimpleResult,
         done
       )
@@ -509,7 +511,7 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
     test('Should include default environment variables from .env.defaults with .env overrides.', (done) => {
       expectResultsToContainReplacements(
-        new DotenvPlugin({ defaults: true, prefix: 'meta.env.' }),
+        new DotenvPlugin({ defaults: true, prefix }),
         altDefaultsResult,
         done
       )
@@ -517,7 +519,7 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
     test('Should include default environment variables from provided defaults file with .env overrides.', (done) => {
       expectResultsToContainReplacements(
-        new DotenvPlugin({ defaults: envDefaults, prefix: 'meta.env.' }),
+        new DotenvPlugin({ defaults: envDefaults, prefix }),
         altDefaultsResult2,
         done
       )
@@ -525,10 +527,36 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
     test('Should include environment variables with empty vars from provided .env file.', (done) => {
       expectResultsToContainReplacements(
-        new DotenvPlugin({ path: envOneEmpty, prefix: 'meta.env.' }),
+        new DotenvPlugin({ path: envOneEmpty, prefix }),
         altOneEmptyResult,
         done
       )
+    })
+
+    describe('Stubbing when prefix is set', () => {
+      const notStubbed = [
+        'const TEST_ALT = "testing"',
+        'const TEST2_ALT = meta.env.TEST2',
+        // Replacement of NODE_ENV to mode, specified in webpack config,
+        // is inteded behaviour of webpack
+        // @see https://webpack.js.org/configuration/mode/
+        'const NODE_ENV = "development"',
+        'const BASIC = process.env.BASIC',
+        'const MONGOLAB_USER = process.env.MONGOLAB_USER',
+        'const MONGOLAB_PORT = process.env.MONGOLAB_PORT'
+      ]
+
+      test('Should not stab if prefix is set to value other than process.env', (done) => {
+        const plugin = new DotenvPlugin({ prefix, path: envSimple })
+
+        compile(getConfig('web', plugin), (result) => {
+          notStubbed.forEach((expectation) => {
+            expect(result).toMatch(expectation)
+          })
+
+          done()
+        })
+      })
     })
   })
 })
