@@ -491,7 +491,7 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
   })
 
   describe('Alternative prefix', () => {
-    const prefix = 'meta.env'
+    const prefix = 'META_ENV_'
 
     test('Should include environment variables from .env file in the root dir.', (done) => {
       expectResultsToContainReplacements(
@@ -536,7 +536,7 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
     describe('Stubbing when prefix is set', () => {
       const notStubbed = [
         'const TEST_ALT = "testing"',
-        'const TEST2_ALT = meta.env.TEST2',
+        'const TEST2_ALT = META_ENV_TEST2',
         // Replacement of NODE_ENV to mode, specified in webpack config,
         // is inteded behaviour of webpack
         // @see https://webpack.js.org/configuration/mode/
