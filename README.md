@@ -12,12 +12,6 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <a href="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml" target="_blank">
     <img alt="Main" src="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml/badge.svg" />
   </a>
-  <a href="https://david-dm.org/mrsteele/dotenv-webpack" target="_blank">
-    <img alt="Dependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack.svg" />
-  </a>
-  <a href="https://david-dm.org/mrsteele/dotenv-webpack?type=dev" target="_blank">
-    <img alt="devDependency Status" src="https://david-dm.org/mrsteele/dotenv-webpack/dev-status.svg" />
-  </a>
 
   <h1>
     <img width="30" height="30" src="https://raw.githubusercontent.com/motdotla/dotenv/master/dotenv.png" alt="dotenv" />
