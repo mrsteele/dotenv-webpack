@@ -1,5 +1,9 @@
-# dotenv-webpack
-
+<h1>
+  <img width="30" height="30" src="https://raw.githubusercontent.com/motdotla/dotenv/master/dotenv.png" alt="dotenv" />
+  <img width="30" height="30" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack">
+  dotenv-webpack
+</h1>
+  
 A secure webpack plugin that supports dotenv and other environment variables and **only exposes what you choose and use**.
 
 <div align="center">
@@ -12,12 +16,6 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <a href="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml" target="_blank">
     <img alt="Main" src="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml/badge.svg" />
   </a>
-
-  <h1>
-    <img width="30" height="30" src="https://raw.githubusercontent.com/motdotla/dotenv/master/dotenv.png" alt="dotenv" />
-    <img width="30" height="30" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack">
-    dotenv-webpack
-  </h1>
 </div>
 
 ## Installation
