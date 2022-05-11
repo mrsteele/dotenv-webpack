@@ -30,6 +30,8 @@ Include the package locally in your repository.
 
 Your `.env` files can include sensitive information. Because of this,`dotenv-webpack` will only expose environment variables that are **explicitly referenced in your code** to your final bundle.
 
+Interested in taking your environments to the next level? Check out the [Dotenv Organization](https://www.dotenv.development/get-started?r=3).
+
 ## Usage
 
 The plugin can be installed with little-to-no configuration needed. Once installed, you can access the variables within your code using `process.env` as you would with `dotenv`.
