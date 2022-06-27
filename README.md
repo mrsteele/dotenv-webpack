@@ -16,7 +16,8 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <a href="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml" target="_blank">
     <img alt="Main" src="https://github.com/mrsteele/dotenv-webpack/actions/workflows/main.yml/badge.svg" />
   </a>
-  <a href="https://www.dotenv.development/get-started?r=3" target="_blank">
+  <object id="badge" data="https://snyk-widget.herokuapp.com/badge/npm/dotenv-webpack/badge.svg" type="image/svg+xml"></object>
+  <a href="https://www.dotenv.org/get-started?r=3" target="_blank">
     <img alt="dotenv-vault" src="https://badge.dotenv.org/works-with.svg?r=3" />
   </a>
 </div>
@@ -33,7 +34,7 @@ Include the package locally in your repository.
 
 Your `.env` files can include sensitive information. Because of this,`dotenv-webpack` will only expose environment variables that are **explicitly referenced in your code** to your final bundle.
 
-Interested in taking your environments to the next level? Check out the [Dotenv Organization](https://www.dotenv.development/get-started?r=3).
+Interested in taking your environments to the next level? Check out the [Dotenv Organization](https://www.dotenv.org/get-started?r=3).
 
 ## Usage
 
