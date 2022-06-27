@@ -44,7 +44,8 @@ const getConfig = (target, plugin) => ({
   target,
   entry: resolve(__dirname, './fixtures/index'),
   output: {
-    path: resolve(__dirname, `./output/${hash(expect.getState().currentTestName)}`)
+    path: resolve(__dirname, `./output/${hash(expect.getState().currentTestName)}`),
+    chunkFormat: 'commonjs'
   },
   plugins: [plugin]
 })
