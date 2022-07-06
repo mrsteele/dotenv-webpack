@@ -197,7 +197,7 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
     })
 
     test('Should fail when not passing safe-mode', (done) => {
-      const config = getConfig('web', new DotenvPlugin({ path: envEmpty, safe: true }))
+      const config = getConfig('web', new DotenvPlugin({ path: envMissingOne, safe: true }))
 
       webpack(config, (err) => {
         expect(err.message).toBe('Missing environment variable: TEST')
