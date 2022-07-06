@@ -95,7 +95,7 @@ class Dotenv {
 
     let blueprint = env
     if (safe) {
-      let file = './.env.example'
+      let file = `${path}.example`
       if (safe !== true) {
         file = safe
       }
