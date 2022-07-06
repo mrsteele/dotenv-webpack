@@ -112,11 +112,11 @@ class Dotenv {
   }
 
   getDefaults () {
-    const { silent, defaults } = this.config
+    const { path, silent, defaults } = this.config
 
     if (defaults) {
       return this.loadFile({
-        file: defaults === true ? './.env.defaults' : defaults,
+        file: defaults === true ? `${path}.defaults` : defaults,
         silent
       })
     }
