@@ -3,7 +3,7 @@
   <img width="30" height="30" src="https://webpack.js.org/assets/icon-square-big.svg" alt="webpack">
   dotenv-webpack
 </h1>
-  
+
 A secure webpack plugin that supports dotenv and other environment variables and **only exposes what you choose and use**.
 
 <div align="center">
@@ -109,7 +109,7 @@ If you are running into issues where you or another package you use interfaces w
 
 Use the following properties to configure your instance.
 
-* **path** (`'./.env'`) - The path to your environment variables.
+* **path** (`'./.env'`) - The path to your environment variables. This same path applies to the `.env.example` and `.env.defaults` files. [Read more here](#about-path-settings).
 * **safe** (`false`) - If true, load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
 * **allowEmptyValues** (`false`) - Whether to allow empty strings in safe mode. If false, will throw an error if any env variables are empty (but only if safe mode is enabled).
 * **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
@@ -137,6 +137,51 @@ module.exports = {
   ]
   ...
 };
+```
+## About `path` settings
+
+As previously mentioned, it is possible to customize the `path` where the `.env` file is located as well as its *filename* from the plugin settings:
+
+```javascript
+module.exports = {
+  ...
+  plugins: [
+    new Dotenv({
+      path: './some.other.env',
+    })
+  ]
+  ...
+};
+```
+
+It is important to mention that this same path and filename will be used for the location of the `.env.example` and `.env.defaults` files if they are configured, this will only add the `.example` and `.defaults` suffixes respectively:
+
+```javascript
+module.exports = {
+  ...
+  plugins: [
+    new Dotenv({
+      path: '../../path/to/other.env',
+      safe: true, // load '../../path/to/other.env.example'
+      defaults: true, // load '../../path/to/other.env.defaults'
+    })
+  ]
+  ...
+};
+```
+
+This is especially useful when working with [Monorepos](https://monorepo.tools/) where the same configuration can be shared within all sub-packages of the repository:
+
+```bash
+.
+├── packages/
+│   ├── app/
+│   │   └── webpack.config.js # { path: '../../.env' }
+│   └── libs/
+│       └── webpack.config.js # { path: '../../.env' }
+├── .env
+├── .env.example
+└── .env.defaults
 ```
 
 ## LICENSE

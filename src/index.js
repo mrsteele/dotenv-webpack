@@ -95,7 +95,7 @@ class Dotenv {
 
     let blueprint = env
     if (safe) {
-      let file = './.env.example'
+      let file = `${path}.example`
       if (safe !== true) {
         file = safe
       }
@@ -112,11 +112,11 @@ class Dotenv {
   }
 
   getDefaults () {
-    const { silent, defaults } = this.config
+    const { path, silent, defaults } = this.config
 
     if (defaults) {
       return this.loadFile({
-        file: defaults === true ? './.env.defaults' : defaults,
+        file: defaults === true ? `${path}.defaults` : defaults,
         silent
       })
     }
