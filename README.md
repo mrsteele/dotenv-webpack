@@ -154,7 +154,7 @@ module.exports = {
 };
 ```
 
-It is important to mention that this same path and filename will be used for the location of the `.env.example` and `.env.defaults` files if they are configured:
+It is important to mention that this same path and filename will be used for the location of the `.env.example` and `.env.defaults` files if they are configured, this will only add the `.example` and `.defaults` suffixes respectively:
 
 ```javascript
 module.exports = {
