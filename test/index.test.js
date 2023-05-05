@@ -238,15 +238,9 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
   describe('force configuration', () => {
     test('Should override if forced', (done) => {
-      // defaults
-      // TEST=nope
-      // TEST2=youcanseethis
-
-      // missingone
-      // TEST2=Hello
       expectResultsToContainReplacements(
         new DotenvPlugin({ force: true }),
-        {...defaultEnvResult, ...missingOneResult},
+        { ...defaultEnvResult, ...missingOneResult },
         done
       )
     })
