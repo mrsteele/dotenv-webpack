@@ -1,6 +1,5 @@
 import dotenv from 'dotenv-defaults'
 import fs from 'fs'
-import { DefinePlugin } from 'webpack'
 
 // Mostly taken from here: https://github.com/motdotla/dotenv-expand/blob/master/lib/main.js#L4
 const interpolate = (env, vars) => {
@@ -41,13 +40,14 @@ class Dotenv {
     const variables = this.gatherVariables()
     const target = compiler.options.target ?? 'web'
     const version = (compiler.webpack && compiler.webpack.version) || '4'
+    const webpack = compiler.webpack || require('webpack');
     const data = this.formatData({
       variables,
       target,
       version
     })
 
-    new DefinePlugin(data).apply(compiler)
+    new webpack.DefinePlugin(data).apply(compiler)
   }
 
   gatherVariables () {
