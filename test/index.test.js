@@ -267,11 +267,14 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
 
   describe('System variables', () => {
     const originalPath = process.env.PATH
+    const originalSecret = process.env.SECRET
     beforeEach(() => {
       process.env.PATH = '/usr/local/bin:/usr/local/sbin:'
+      process.env.SECRET = '_secret_value_'
     })
     afterEach(() => {
       process.env.PATH = originalPath
+      process.env.SECRET = originalSecret
     })
 
     test('Should allow system env variables', (done) => {
@@ -283,7 +286,21 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
       compile(config, (result) => {
         expect(result).toMatch('const TEST = "testing"')
         expect(result).toMatch('const PATH = "/usr/local/bin:/usr/local/sbin:')
+        expect(result).toMatch('const SECRET = "_secret_value_')
+        done()
+      })
+    })
 
+    test('Should allow specified system env variables', (done) => {
+      const config = getConfig(
+        'web',
+        new DotenvPlugin({ path: envSimple, systemvars: ['PATH'] })
+      )
+
+      compile(config, (result) => {
+        expect(result).toMatch('const TEST = "testing"')
+        expect(result).toMatch('const PATH = "/usr/local/bin:/usr/local/sbin:')
+        expect(result).not.toMatch('const SECRET = "_secret_value_')
         done()
       })
     })
