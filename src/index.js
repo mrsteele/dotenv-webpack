@@ -45,8 +45,9 @@ class Dotenv {
       target,
       version
     })
+    const DefinePlugin = (compiler.webpack && compiler.webpack.DefinePlugin) || require('webpack').DefinePlugin
 
-    new compiler.webpack.DefinePlugin(data).apply(compiler)
+    new DefinePlugin(data).apply(compiler)
   }
 
   gatherVariables () {
