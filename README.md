@@ -118,6 +118,7 @@ Use the following properties to configure your instance.
 * **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at [npm](https://www.npmjs.com/package/dotenv-defaults).
 * **ignoreStub** (`false`) - Override the automatic check whether to stub `process.env`. [Read more here](#user-content-processenv-stubbing--replacing).
 * **prefix** (`'process.env.'`) - The prefix to use before the name of your env variables.
+* **force** (`false`) - This will override existing env variables with anything you pass in from your file.
 
 The following example shows how to set any/all arguments.
 

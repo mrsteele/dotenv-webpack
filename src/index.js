@@ -57,7 +57,7 @@ class Dotenv {
     const { env, blueprint } = this.getEnvs()
 
     Object.keys(blueprint).forEach(key => {
-      const value = Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : env[key]
+      const value = !this.config.force && Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : env[key]
 
       const isMissing = typeof value === 'undefined' || value === null ||
         (!allowEmptyValues && value === '')
