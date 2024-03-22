@@ -43,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   test:
     name: Test Node v${{ matrix.node }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node: [ '10', '12', '14' ]
@@ -68,7 +68,7 @@ jobs:
     name: Release
     # Only run on "master" branch
     if: ${{ github.ref == 'refs/heads/master' }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [
       test,
       lint
