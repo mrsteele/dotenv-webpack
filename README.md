@@ -42,7 +42,7 @@ Interested in taking your environments to the next level? Check out the [Dotenv 
 
 The plugin can be installed with little-to-no configuration needed. Once installed, you can access the variables within your code using `process.env` as you would with `dotenv`.
 
-The example bellow shows a standard use-case.
+The example below shows a standard use-case.
 
 ### Create a .env file
 
