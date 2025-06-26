@@ -112,7 +112,7 @@ Use the following properties to configure your instance.
 * **path** (`'./.env'`) - The path to your environment variables. This same path applies to the `.env.example` and `.env.defaults` files. [Read more here](#about-path-settings).
 * **safe** (`false`) - If true, load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
 * **allowEmptyValues** (`false`) - Whether to allow empty strings in safe mode. If false, will throw an error if any env variables are empty (but only if safe mode is enabled).
-* **systemvars** (`false`) - Set to true if you would rather load all system variables as well (useful for CI purposes).
+* **systemvars** (`false`) - Set to true if you would rather load all system variables as well. Set to an array of strings to load only specified system variables. (useful for CI purposes).
 * **silent** (`false`) - If true, all warnings will be suppressed.
 * **expand** (`false`) - Allows your variables to be "expanded" for reusability within your `.env` file.
 * **defaults** (`false`) - Adds support for `dotenv-defaults`. If set to `true`, uses `./.env.defaults`. If a string, uses that location for a defaults file. Read more at [npm](https://www.npmjs.com/package/dotenv-defaults).

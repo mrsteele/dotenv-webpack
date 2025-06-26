@@ -24,7 +24,7 @@ class Dotenv {
    * @param {Object} options - The parameters.
    * @param {String} [options.path=./.env] - The location of the environment variable.
    * @param {Boolean|String} [options.safe=false] - If false ignore safe-mode, if true load `'./.env.example'`, if a string load that file as the sample.
-   * @param {Boolean} [options.systemvars=false] - If true, load system environment variables.
+   * @param {Boolean|String[]} [options.systemvars=false] - If true, load all system environment variables, if an array of strings load only specified system environment variables
    * @param {Boolean} [options.silent=false] - If true, suppress warnings, if false, display warnings.
    * @param {String} [options.prefix=process.env.] - The prefix, used to denote environment variables.
    * @returns {webpack.DefinePlugin}
@@ -82,7 +82,15 @@ class Dotenv {
   }
 
   initializeVars () {
-    return (this.config.systemvars) ? Object.assign({}, process.env) : {}
+    const initialVars = {}
+    if (Array.isArray(this.config.systemvars)) {
+      this.config.systemvars.forEach((key) => {
+        initialVars[key] = process.env[key]
+      })
+    } else if (this.config.systemvars) {
+      Object.assign(initialVars, process.env)
+    }
+    return initialVars
   }
 
   getEnvs () {
