@@ -236,6 +236,16 @@ describe.each(versions)('%s', (_, DotenvPlugin) => {
     })
   })
 
+  describe('force configuration', () => {
+    test('Should override if forced', (done) => {
+      expectResultsToContainReplacements(
+        new DotenvPlugin({ force: true }),
+        { ...defaultEnvResult, ...missingOneResult },
+        done
+      )
+    })
+  })
+
   describe('Defaults configuration', () => {
     test('should support default configurations', (done) => {
       expectResultsToContainReplacements(
