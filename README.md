@@ -19,9 +19,6 @@ A secure webpack plugin that supports dotenv and other environment variables and
   <img alt="Vulnerabilities Score" src="https://snyk-widget.herokuapp.com/badge/npm/dotenv-webpack/badge.svg" />
   <img alt="Known Vulnerabilities" src="https://snyk.io/test/github/mrsteele/dotenv-webpack/badge.svg" />
   <object id="badge" data="https://snyk-widget.herokuapp.com/badge/npm/dotenv-webpack/badge.svg" type="image/svg+xml"></object>
-  <a href="https://www.dotenv.org/get-started?r=3" target="_blank">
-    <img alt="dotenv-vault" src="https://badge.dotenv.org/works-with.svg?r=3" />
-  </a>
 </div>
 
 ## Installation

@@ -3,11 +3,9 @@
 const { resolve } = require('path')
 const { createHash } = require('crypto')
 const webpack = require('webpack')
-const { readFileSync } = require('fs')
-const rimraf = require('rimraf')
+const { readFileSync, rmSync } = require('fs')
 
-const Src = require('../src')
-const Dist = require('../dist')
+const Main = require('..')
 
 const envEmpty = resolve(__dirname, './envs/.empty')
 const envEmptyExample = resolve(__dirname, './envs/.empty.example')
@@ -76,24 +74,20 @@ const expectResultsToContainReplacements = (plugin, env, done) => {
   })
 }
 
-const versions = [
-  ['Source', Src.default],
-  ['Dist', Dist.default]
-]
-
 beforeAll(() => {
   global.console.warn = jest.fn()
 })
 
-beforeEach((done) => {
+beforeEach(() => {
   jest.resetAllMocks()
 
   const outputDir = resolve(__dirname, `output/${hash(expect.getState().currentTestName)}`)
-
-  rimraf(outputDir, done)
+  rmSync(outputDir, { recursive: true, force: true })
 })
 
-describe.each(versions)('%s', (_, DotenvPlugin) => {
+describe('Main', () => {
+  const DotenvPlugin = Main
+
   test('Should be an function.', () => {
     expect(typeof DotenvPlugin).toEqual('function')
   })

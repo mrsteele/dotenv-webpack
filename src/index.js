@@ -1,5 +1,5 @@
-import dotenv from 'dotenv-defaults'
-import fs from 'fs'
+const dotenv = require('dotenv-defaults')
+const fs = require('fs')
 
 // Mostly taken from here: https://github.com/motdotla/dotenv-expand/blob/master/lib/main.js#L4
 const interpolate = (env, vars) => {
@@ -207,4 +207,4 @@ class Dotenv {
   }
 }
 
-export default Dotenv
+module.exports = Dotenv
