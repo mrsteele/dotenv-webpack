@@ -6,7 +6,7 @@
   "scripts": {
     "precommit": "npm run lint",
     "prepush": "npm t",
-    "lint": "standard",
+    "lint": "XDG_CACHE_HOME=./.cache standard",
     "predoc": "rimraf docs",
     "doc": "jsdoc src/index.js -d docs",
     "test": "jest",
