@@ -7,6 +7,7 @@ const TEST2 = process.env.TEST2
 
 // System
 const PATH = process.env.PATH
+const SECRET = process.env.SECRET
 
 // Expanded
 const NODE_ENV = process.env.NODE_ENV
