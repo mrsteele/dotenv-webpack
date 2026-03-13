@@ -190,7 +190,11 @@ class Dotenv {
    */
   loadFile ({ file, silent }) {
     try {
-      return fs.readFileSync(file, 'utf8')
+      const content = fs.readFileSync(file, 'utf8')
+      return content
+        .split('\n')
+        .map(this.removeInlineComment)
+        .join('\n')
     } catch (err) {
       this.warn(`Failed to load ${file}.`, silent)
       return {}
@@ -204,6 +208,12 @@ class Dotenv {
    */
   warn (msg, silent) {
     !silent && console.warn(msg)
+  }
+
+  removeInlineComment (str) {
+    const hashIndex = str.indexOf('#')
+    if (hashIndex === -1) return str.trim()
+    return str.substring(0, hashIndex).trim()
   }
 }
 
